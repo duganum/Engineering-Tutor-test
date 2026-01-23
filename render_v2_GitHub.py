@@ -73,9 +73,17 @@ def render_problem_diagram(prob_id):
         found = True
 
     elif pid == "K_2.1_2": 
-        t_acc = 0.889; t_tot = 4.0; v_max = 22.5
-        ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
-        ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
+        ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
+        t_land = 3.71
+        t_vals = np.linspace(0, t_land, 100)
+        y_vals = 80*t_vals - 16.1*t_vals**2
+        ax.plot(t_vals - 1, y_vals, 'r--') 
+        
+        # Add these for better clarity:
+        ax.text(-1, -5, 'A', fontweight='bold', ha='center')
+        ax.text(t_land - 1, 55, 'B', fontweight='bold', ha='center', color='blue')
+        
+        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110)
         ax.set_aspect('auto')
         found = True
 
