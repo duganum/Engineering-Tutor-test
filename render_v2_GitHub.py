@@ -75,7 +75,7 @@ def render_problem_diagram(prob_id):
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         try:
             # 1. Load the actual image file from the new 'images' folder
-            img = plt.imread('images/image_6ba454.png')
+            img = plt.imread('image_6ba454.png')
             
             # 2. Display the image
             # The extent maps the image into your plot's coordinate space
