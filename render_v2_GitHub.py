@@ -73,24 +73,38 @@ def render_problem_diagram(prob_id):
         found = True
         
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
+        import os
         try:
-            # 1. Load the actual image file from the new 'images' folder
-            img = plt.imread('image_6ba454.png')
+            # 1. Debugging Info: Check current working directory
+            cwd = os.getcwd()
+            img_path = 'images/image_6ba454.png'
+            file_exists = os.path.exists(img_path)
             
-            # 2. Display the image
-            # The extent maps the image into your plot's coordinate space
-            ax.imshow(img, extent=[-1, 4, -5, 115], aspect='auto')
+            if file_exists:
+                # If found, try to display it
+                img = plt.imread(img_path)
+                ax.imshow(img, extent=[-1, 4, -5, 115], aspect='auto')
+                ax.set_title(f"SUCCESS: Image Found")
+                ax.axis('off')
+            else:
+                # If not found, show the path and directory contents
+                files_in_images = os.listdir('images') if os.path.exists('images') else "images folder NOT FOUND"
+                debug_msg = (f"FILE NOT FOUND\n"
+                             f"Looking for: {img_path}\n"
+                             f"Current Dir: {cwd}\n"
+                             f"In 'images' folder: {files_in_images}")
+                ax.text(0.5, 0.5, debug_msg, ha='center', va='center', 
+                        color='red', fontsize=8, wrap=True)
+                ax.set_title("Debug Mode: Path Error")
             
-            # 3. Clean up the view
-            ax.axis('off') # Hide axes to use labels already inside the image
             found = True
             
         except Exception as e:
-            # Error handling if the file still cannot be found
-            ax.text(0.5, 0.5, f"Error loading image:\n{e}", 
-                    ha='center', va='center', color='red')
+            ax.text(0.5, 0.5, f"CRITICAL ERROR:\n{str(e)}", 
+                    ha='center', va='center', color='darkred', fontsize=9)
             found = True
-    elif pid == "K_2.1_3":
+
+elif pid == "K_2.1_3":
         t_acc = 0.889; t_tot = 4.0; v_max = 22.5
         ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
         ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
