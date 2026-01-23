@@ -23,7 +23,7 @@ def get_gemini_model(system_instruction):
 def load_problems():
     """Loads problems from problems.json."""
     try:
-        with open('problems.json', 'r') as f:
+        with open('problems_v2_GitHub.json', 'r') as f:
             return json.load(f)
     except Exception as e:
         st.error(f"Error loading problems.json: {e}")
@@ -89,4 +89,5 @@ def analyze_and_send_report(user_name, problem_title, chat_history):
     except Exception as e:
         st.error(f"Email failed: {e}")
     
+
     return report_text
