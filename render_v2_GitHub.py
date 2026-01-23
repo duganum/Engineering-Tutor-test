@@ -72,13 +72,18 @@ def render_problem_diagram(prob_id):
         ax.set_aspect('auto') # Graphs shouldn't be equal aspect
         found = True
 
-    elif pid == "K_2.1_2": 
+elif pid == "K_2.1_2": 
         ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
         t_land = 3.71
         t_vals = np.linspace(0, t_land, 100)
         y_vals = 80*t_vals - 16.1*t_vals**2
         ax.plot(t_vals - 1, y_vals, 'r--') 
-        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110) # Tailored limits
+        
+        # Add these for better clarity:
+        ax.text(-1, -5, 'A', fontweight='bold', ha='center')
+        ax.text(t_land - 1, 55, 'B', fontweight='bold', ha='center', color='blue')
+        
+        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110)
         ax.set_aspect('auto')
         found = True
 
@@ -89,17 +94,7 @@ def render_problem_diagram(prob_id):
         ax.set_aspect('auto')
         found = True
 
-    # --- AT THE VERY END ---
-    if not found:
-        ax.text(0, 0, f"No Diagram for ID: {pid}", color='red', ha='center')
-        ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
-
-    # REMOVE THE GLOBAL ax.set_xlim(-2.5, 2.5) FROM HERE
-    ax.axis('off') 
-    plt.tight_layout()
-    return fig
-
-    # K_2.2: 포물선 운동 (Projectile)
+     # K_2.2: 포물선 운동 (Projectile)
     elif pid == "K_2.2_1": # 최대 높이
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
