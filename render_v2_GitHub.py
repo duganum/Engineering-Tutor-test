@@ -85,16 +85,29 @@ def render_problem_diagram(prob_id):
         found = True
 
     elif pid == "S_1.4_3":
-        ax.plot([-2, 2], [0, 0], color='brown', lw=8) # Log
-        ax.annotate('', xy=(-2, 1), xytext=(-2, 0), arrowprops=dict(arrowstyle='<-', color='green', lw=2))
-        ax.text(-2.2, 1.2, '$F_A$', color='green')
-        ax.annotate('', xy=(0.67, 1), xytext=(0.67, 0), arrowprops=dict(arrowstyle='<-', color='blue', lw=2))
-        ax.text(0.5, 1.2, '$F_B$', color='blue')
-        ax.annotate('', xy=(0, -1), xytext=(0, 0), arrowprops=dict(arrowstyle='->', color='red', lw=2))
-        ax.text(-0.3, -1.3, '$W$', color='red')
+        # 통나무 그리기 (Brown)
+        ax.plot([-2, 2], [0, 0], color='brown', lw=8) 
+        
+        # Person A: 왼쪽 끝에서 위로 밀어 올리는 힘
+        # xy가 화살표 머리(끝점), xytext가 화살표 꼬리(시작점)입니다.
+        ax.annotate('', xy=(-2, 1), xytext=(-2, 0), 
+                    arrowprops=dict(arrowstyle='->', color='green', lw=2))
+        ax.text(-2.2, 1.2, '$F_A$', color='green', fontsize=12)
+        
+        # Person B: 오른쪽에서 1/3 지점에서 위로 밀어 올리는 힘
+        ax.annotate('', xy=(0.67, 1), xytext=(0.67, 0), 
+                    arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+        ax.text(0.5, 1.2, '$F_B$', color='blue', fontsize=12)
+        
+        # Weight (W): 통나무 중심에서 아래로 당기는 중력
+        ax.annotate('', xy=(0, -1), xytext=(0, 0), 
+                    arrowprops=dict(arrowstyle='->', color='red', lw=2))
+        ax.text(-0.3, -1.3, '$W$', color='red', fontsize=12)
+        
+        ax.set_title("Problem S_1.4_3: Corrected FBD")
         found = True
-
     # --- K_2: Kinematics (Contains check) ---
+    
     elif "K_2.1" in pid:
         ax.add_patch(plt.Rectangle((-0.5, 0), 1, 0.5, color='blue', alpha=0.5))
         ax.annotate('', xy=(1.5, 0.25), xytext=(0.5, 0.25), arrowprops=dict(arrowstyle='->'))
