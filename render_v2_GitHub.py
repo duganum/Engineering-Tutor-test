@@ -72,19 +72,37 @@ def render_problem_diagram(prob_id):
         ax.set_aspect('auto') # Graphs shouldn't be equal aspect
         found = True
 
-    elif pid == "K_2.1_2": 
+    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
+        # 1. Physical Environment
+        # Draw the cliff (x from -2 to 0, y from 0 to 50)
         ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
+        ax.plot([-3, 0], [0, 0], 'k-', lw=2)    # Ground Level A
+        ax.plot([0, 4], [50, 50], 'k-', lw=2)   # Cliff Top Level B
+        
+        # 2. Trajectory Calculation: y = v0*t - 0.5*g*t^2
+        # v0 = 80, g = 32.2 (so 0.5g = 16.1)
         t_land = 3.71
         t_vals = np.linspace(0, t_land, 100)
-        y_vals = 80*t_vals - 16.1*t_vals**2
-        ax.plot(t_vals - 1, y_vals, 'r--') 
+        y_vals = 80 * t_vals - 16.1 * t_vals**2
         
-        # Add these for better clarity:
-        ax.text(-1, -5, 'A', fontweight='bold', ha='center')
-        ax.text(t_land - 1, 55, 'B', fontweight='bold', ha='center', color='blue')
+        # 3. Plotting
+        # We use (t_vals - 1) as the x-axis to simulate horizontal progress toward the cliff
+        ax.plot(t_vals - 1, y_vals, 'r--', lw=2, label='Path') 
         
-        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110)
-        ax.set_aspect('auto')
+        # 4. Labels and Annotations
+        ax.text(-1, -8, 'A', fontweight='bold', ha='center', fontsize=12)
+        ax.text(t_land - 1, 55, 'B', fontweight='bold', ha='center', color='blue', fontsize=12)
+        ax.text(-1, 25, '50-ft Cliff', rotation=90, va='center', fontweight='bold')
+        
+        # 5. CRITICAL: Override global limits
+        ax.set_xlim(-3, 4)
+        ax.set_ylim(-15, 110)
+        ax.set_aspect('auto') # Forces the height to be visible relative to width
+        ax.axis('on')         # Turn axes back on to see the scale
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_ylabel("Height (ft)")
+        ax.set_xlabel("Simulated Horizontal Distance / Time")
+        
         found = True
 
 
