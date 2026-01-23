@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 import re
-from logic import get_gemini_model, load_problems, check_numeric_match, analyze_and_send_report
+from logic_v2_GitHub import get_gemini_model, load_problems, check_numeric_match, analyze_and_send_report
 
 st.set_page_config(page_title="Socratic Engineering Tutor", layout="wide")
 
@@ -155,4 +155,5 @@ elif st.session_state.page == "report_view":
     if st.button("Confirm and Return to Problem Menu"):
         # Reset current session data if they want to try another problem
         st.session_state.page = "landing"
+
         st.rerun()
