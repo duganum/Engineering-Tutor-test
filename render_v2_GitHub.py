@@ -72,7 +72,7 @@ def render_problem_diagram(prob_id):
         ax.set_aspect('auto') # Graphs shouldn't be equal aspect
         found = True
 
-elif pid == "K_2.1_2": 
+    elif pid == "K_2.1_2": 
         ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
         t_land = 3.71
         t_vals = np.linspace(0, t_land, 100)
