@@ -74,24 +74,22 @@ def render_problem_diagram(prob_id):
         
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         try:
-            # 1. Load the actual image file
-            # Ensure the path matches where your image_6ba454.png is stored
+            # 1. Load the actual image file from the new 'images' folder
             img = plt.imread('images/image_6ba454.png')
             
             # 2. Display the image
-            # extent=[xmin, xmax, ymin, ymax] maps the image to your coordinate system
+            # The extent maps the image into your plot's coordinate space
             ax.imshow(img, extent=[-1, 4, -5, 115], aspect='auto')
             
             # 3. Clean up the view
-            ax.axis('off') # Hide axes since the image has its own labels
+            ax.axis('off') # Hide axes to use labels already inside the image
             found = True
             
-        except FileNotFoundError:
-            # Fallback if image is missing
-            ax.text(0.5, 0.5, "Image 'image_6ba454.png' not found", 
+        except Exception as e:
+            # Error handling if the file still cannot be found
+            ax.text(0.5, 0.5, f"Error loading image:\n{e}", 
                     ha='center', va='center', color='red')
             found = True
-
     elif pid == "K_2.1_3":
         t_acc = 0.889; t_tot = 4.0; v_max = 22.5
         ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
