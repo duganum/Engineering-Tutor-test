@@ -75,30 +75,26 @@ def render_problem_diagram(prob_id):
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         import os
         try:
-            # 1. Debugging Info: Check current working directory
-            cwd = os.getcwd()
             img_path = 'images/image_6ba454.png'
-            file_exists = os.path.exists(img_path)
-            
-            if file_exists:
-                # If found, try to display it
+            if os.path.exists(img_path):
                 img = plt.imread(img_path)
-                ax.imshow(img, extent=[-1, 4, -5, 115], aspect='auto')
-                ax.set_title(f"SUCCESS: Image Found")
+                
+                # Use standard imshow without 'extent' to show the image as-is
+                ax.imshow(img)
+                
+                # Remove all axes, grids, and labels that might overlap the image
                 ax.axis('off')
+                
+                # Ensure the plot doesn't force a specific limit that cuts the image
+                ax.set_xlim(None)
+                ax.set_ylim(None)
             else:
-                # If not found, show the path and directory contents
-                files_in_images = os.listdir('images') if os.path.exists('images') else "images folder NOT FOUND"
-                debug_msg = (f"FILE NOT FOUND\n"
-                             f"Looking for: {img_path}\n"
-                             f"Current Dir: {cwd}\n"
-                             f"In 'images' folder: {files_in_images}")
-                ax.text(0.5, 0.5, debug_msg, ha='center', va='center', 
-                        color='red', fontsize=8, wrap=True)
-                ax.set_title("Debug Mode: Path Error")
+                ax.text(0.5, 0.5, f"File missing at: {img_path}", ha='center', color='red')
             
             found = True
-            
+        except Exception as e:
+            ax.text(0.5, 0.5, f"Display Error: {str(e)}", ha='center', color='blue')
+            found = True            
         except Exception as e:
             ax.text(0.5, 0.5, f"CRITICAL ERROR:\n{str(e)}", 
                     ha='center', va='center', color='darkred', fontsize=9)
