@@ -76,7 +76,7 @@ def render_problem_diagram(prob_id):
         try:
             # 1. Load the actual image file
             # Ensure the path matches where your image_6ba454.png is stored
-            img = plt.imread('image_6ba454.png')
+            img = plt.imread('images/image_6ba454.png')
             
             # 2. Display the image
             # extent=[xmin, xmax, ymin, ymax] maps the image to your coordinate system
