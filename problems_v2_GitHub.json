@@ -86,23 +86,31 @@
   {
     "id": "K_2.1_1",
     "category": "Kinematics: Rectilinear Motion",
-    "statement": "A car accelerates from rest at $2 m/s^2$. Find its Velocity ($v$) after 10 seconds.",
-    "targets": { "v": 20.0 },
+    "statement": "The velocity of a particle is given by $v = 20t^2 - 100t + 50$, where $v$ is in meters per second and $t$ is in seconds. Plot the velocity $v$ and acceleration $a$ versus time for the first 6 seconds of motion and evaluate the velocity when $a$ is zero.",
+    "targets": { "v_at_a0": -75.0 },
     "required_units": ["m/s"]
   },
   {
     "id": "K_2.1_2",
-    "category": "Kinematics: Rectilinear Motion",
-    "statement": "A particle moves with $s(t) = 3t^2 + 2t$. Find the Acceleration ($a$) at $t = 5 s$.",
-    "targets": { "a": 6.0 },
-    "required_units": ["m/s^2", "m/s2"]
+    "category": "Kinematics: Vertical Motion",
+    "statement": "A ball is thrown vertically upward with an initial speed of 80 ft/sec from the base A of a 50-ft cliff. Determine the distance $h$ by which the ball clears the top of the cliff, the time $t$ after release for the ball to land at B, and the impact velocity $v_B$. Neglect air resistance.",
+    "targets": { 
+      "h": 49.4, 
+      "t": 3.71, 
+      "v_B": 39.5 
+    },
+    "required_units": ["ft", "s", "ft/sec"]
   },
   {
     "id": "K_2.1_3",
     "category": "Kinematics: Rectilinear Motion",
-    "statement": "How much Distance ($d$) is required to stop a vehicle traveling at 30 m/s with a deceleration of $5 m/s^2$?",
-    "targets": { "d": 90.0 },
-    "required_units": ["m"]
+    "statement": "Starting from rest at home plate, a baseball player runs to first base (90 ft away). He uniformly accelerates over the first 10 ft to his maximum speed, which is then maintained until he crosses first base. If the overall run is completed in 4 seconds, determine his maximum speed, the acceleration over the first 10 feet, and the time duration of the acceleration.",
+    "targets": { 
+      "v_max": 22.5, 
+      "a": 25.3, 
+      "t_accel": 0.889 
+    },
+    "required_units": ["ft/sec", "ft/sec^2", "s"]
   },
   {
     "id": "K_2.2_1",
@@ -168,3 +176,4 @@
     "required_units": ["m/s^2", "m/s2"]
   }
 ]
+
