@@ -61,51 +61,43 @@ def render_problem_diagram(prob_id):
     # 2. Kinematics (K_2.1 ~ K_2.4) - 개별 분리 수정
     # ---------------------------------------------------------
     
-    # K_2.1: Rectilinear Motion
-    elif pid == "K_2.1_1": # 2/1: Particle Velocity & Acceleration
+# ... inside your function ...
+
+    elif pid == "K_2.1_1": 
         t = np.linspace(0, 6, 100)
         v = 20*t**2 - 100*t + 50
-        ax.plot(t, v, 'b-', label='$v(t)$')
-        ax.axhline(0, color='black', lw=1)
-        # a = dv/dt = 40t - 100. a=0 at t=2.5. v(2.5) = -75.
+        ax.plot(t, v, 'b-')
         ax.plot(2.5, -75, 'ro')
-        ax.annotate('a=0 (t=2.5s)', xy=(2.5, -75), xytext=(3.5, -40),
-                    arrowprops=dict(arrowstyle='->', color='red'))
-        ax.set_title("Particle Velocity vs Time")
-        ax.set_xlabel('Time (s)'); ax.set_ylabel('v (m/s)')
+        ax.set_xlim(0, 6); ax.set_ylim(-80, 200) # Tailored limits
+        ax.set_aspect('auto') # Graphs shouldn't be equal aspect
         found = True
 
-    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
-        # Draw the cliff and ground
+    elif pid == "K_2.1_2": 
         ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
-        ax.plot([-4, 0], [0, 0], 'k-', lw=2) # Ground level A
-        ax.plot([0, 4], [50, 50], 'k-', lw=2) # Cliff top B
-        # Plot trajectory: y = 80t - 0.5(32.2)t^2
         t_land = 3.71
         t_vals = np.linspace(0, t_land, 100)
         y_vals = 80*t_vals - 16.1*t_vals**2
-        # Use t for x-axis to show height progression
         ax.plot(t_vals - 1, y_vals, 'r--') 
-        ax.text(-1.8, 25, '50 ft Cliff', rotation=90, va='center')
-        ax.annotate('A', xy=(-1, 0), xytext=(-1.5, -8), weight='bold')
-        ax.annotate('B', xy=(t_land-1, 50), xytext=(t_land-0.5, 55), weight='bold')
-        ax.set_title("Vertical Motion: Base A to Cliff B")
-        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110)
+        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110) # Tailored limits
+        ax.set_aspect('auto')
         found = True
 
-    elif pid == "K_2.1_3": # 2/15: Baseball Player (Trapezoidal Velocity)
-        # v-t graph representing acceleration then constant speed
+    elif pid == "K_2.1_3":
         t_acc = 0.889; t_tot = 4.0; v_max = 22.5
         ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
-        ax.fill_between([0, t_acc, t_tot], [0, v_max, v_max], color='green', alpha=0.1)
-        # Markers for key phases
-        ax.axvline(t_acc, color='gray', linestyle=':', alpha=0.6)
-        ax.text(t_acc/2, v_max/3, 'Accel', ha='center', fontsize=9)
-        ax.text((t_tot+t_acc)/2, v_max/3, 'Constant v', ha='center', fontsize=9)
-        ax.set_title("Baseball Player Velocity Profile")
-        ax.set_xlabel('Time (s)'); ax.set_ylabel('Velocity (ft/sec)')
-        ax.annotate(f'v_max={v_max} fps', xy=(t_acc, v_max), xytext=(t_acc+0.2, v_max+1))
+        ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
+        ax.set_aspect('auto')
         found = True
+
+    # --- AT THE VERY END ---
+    if not found:
+        ax.text(0, 0, f"No Diagram for ID: {pid}", color='red', ha='center')
+        ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
+
+    # REMOVE THE GLOBAL ax.set_xlim(-2.5, 2.5) FROM HERE
+    ax.axis('off') 
+    plt.tight_layout()
+    return fig
 
     # K_2.2: 포물선 운동 (Projectile)
     elif pid == "K_2.2_1": # 최대 높이
