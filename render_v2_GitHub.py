@@ -104,7 +104,7 @@ def render_problem_diagram(prob_id):
                     ha='center', va='center', color='darkred', fontsize=9)
             found = True
 
-elif pid == "K_2.1_3":
+    elif pid == "K_2.1_3":
         t_acc = 0.889; t_tot = 4.0; v_max = 22.5
         ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
         ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
