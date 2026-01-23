@@ -148,11 +148,14 @@ def render_problem_diagram(prob_id):
         ax.annotate('', xy=(-0.5, 0), xytext=(0,0), arrowprops=dict(arrowstyle='->', color='red'))
         ax.text(-0.8, 0.2, '$a$'); found = True
 
-    # --- 에러 핸들링 ---
+    # --- Error handling and default coordinate settings ---
     if not found:
-        ax.text(0, 0, f"No Diagram for ID: {pid}", color='red', ha='center')
-        ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
-
-    ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2.5, 2.5); ax.axis('off')
+        ax.text(0.5, 0.5, f"No Diagram for ID: {pid}", color='red', ha='center')
+        ax.set_xlim(-2.5, 2.5)
+        ax.set_ylim(-2.5, 2.5)
+        ax.set_aspect('equal')
+    
+    # REMOVE any lines below this that reset xlim, ylim, or aspect ratio!
+    ax.axis('off')
     plt.tight_layout()
     return fig
