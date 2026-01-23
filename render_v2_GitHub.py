@@ -73,10 +73,11 @@ def render_problem_diagram(prob_id):
         found = True
 
     elif pid == "K_2.1_2": 
-        x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
-        ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
-        ax.annotate('', xy=(2, 2.5), xytext=(2, 2), arrowprops=dict(arrowstyle='<-', color='blue'))
-        ax.text(2.1, 2.2, '$H_{max}$'); found = True
+        t_acc = 0.889; t_tot = 4.0; v_max = 22.5
+        ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
+        ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
+        ax.set_aspect('auto')
+        found = True
 
 
     elif pid == "K_2.1_3":
