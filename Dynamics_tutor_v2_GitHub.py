@@ -78,6 +78,10 @@ elif st.session_state.page == "chat":
     with cols[0]:
         st.subheader(f"📌 {prob['category']}")
         st.info(prob['statement'])
+
+        from logic_v2_GitHub import render_problem_diagram
+        st.pyplot(render_problem_diagram(p_id))
+    
     with cols[1]:
         total_targets = len(prob['targets'])
         st.metric("Variables Found", f"{len(solved)} / {total_targets}")
@@ -157,3 +161,4 @@ elif st.session_state.page == "report_view":
         st.session_state.page = "landing"
 
         st.rerun()
+
