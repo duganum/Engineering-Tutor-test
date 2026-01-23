@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def render_problem_diagram(prob_id):
-    # 1. ID 문자열 전처리 (공백 제거 및 확실한 문자열 변환)
+    # 1. ID 문자열 전처리 (공백 제거 및 문자열 변환)
     pid = str(prob_id).strip()
     
     fig, ax = plt.subplots(figsize=(5, 4))
@@ -10,7 +10,7 @@ def render_problem_diagram(prob_id):
     found = False
 
     # ---------------------------------------------------------
-    # 1. Statics (S_1.1 ~ S_1.4)
+    # 모든 조건을 하나의 if-elif-else 구조로 통합하여 간섭 방지
     # ---------------------------------------------------------
     
     # --- S_1.1: Free Body Diagrams ---
@@ -32,10 +32,10 @@ def render_problem_diagram(prob_id):
         found = True
 
     elif pid == "S_1.1_3":
-        ax.plot([-1.5, 1.5], [0, 0], 'k-', lw=4)
-        ax.plot(-1.5, -0.2, 'k^')
-        ax.annotate('', xy=(1.5, 1.5), xytext=(1.5, 0), arrowprops=dict(arrowstyle='-', color='blue'))
-        ax.text(-1.7, -0.5, 'Pin A'); ax.text(1.3, 0.8, 'Cable B')
+        ax.plot([-1.5, 1.5], [0, 0], 'k-', lw=4) # Beam
+        ax.plot(-1.5, -0.2, 'k^', markersize=10) # Pin A
+        ax.annotate('', xy=(1.5, 1.5), xytext=(1.5, 0), arrowprops=dict(arrowstyle='-', color='blue', lw=2)) # Cable B
+        ax.text(-1.8, -0.6, 'Pin A'); ax.text(1.3, 0.8, 'Cable B')
         found = True
 
     # --- S_1.2: Trusses ---
@@ -94,9 +94,7 @@ def render_problem_diagram(prob_id):
         ax.text(-0.3, -1.3, '$W$', color='red')
         found = True
 
-    # ---------------------------------------------------------
-    # 2. Kinematics (K_2.1 ~ K_2.4)
-    # ---------------------------------------------------------
+    # --- K_2: Kinematics (Contains check) ---
     elif "K_2.1" in pid:
         ax.add_patch(plt.Rectangle((-0.5, 0), 1, 0.5, color='blue', alpha=0.5))
         ax.annotate('', xy=(1.5, 0.25), xytext=(0.5, 0.25), arrowprops=dict(arrowstyle='->'))
@@ -123,10 +121,11 @@ def render_problem_diagram(prob_id):
         ax.annotate('', xy=(1.2, 1.4), xytext=(1.5, 1), arrowprops=dict(arrowstyle='->', color='orange'))
         found = True
 
-    # --- 에러 핸들링 (ID를 찾지 못했을 때) ---
+    # --- 에러 핸들링 ---
     if not found:
-        ax.text(0, 0, f"No Diagram for ID: {pid}", color='red', ha='center')
+        ax.text(0, 0, f"No Diagram for ID: {pid}", color='red', ha='center', fontsize=12)
         ax.set_xlim(-1, 1); ax.set_ylim(-1, 1)
 
     ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2.5, 2.5); ax.axis('off')
+    plt.tight_layout()
     return fig
