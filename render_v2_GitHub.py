@@ -61,20 +61,40 @@ def render_problem_diagram(prob_id):
     # 2. Kinematics (K_2.1 ~ K_2.4) - 개별 분리 수정
     # ---------------------------------------------------------
     
-    # K_2.1: 직선 운동 (Rectilinear)
-    elif pid == "K_2.1_1": # 가속하는 자동차
-        ax.add_patch(plt.Rectangle((-1, 0), 2, 1, color='blue', alpha=0.3))
-        ax.annotate('', xy=(2, 0.5), xytext=(1, 0.5), arrowprops=dict(arrowstyle='->', color='red', lw=2))
-        ax.text(1.2, 0.7, '$a=2m/s^2$'); ax.set_title("Car Acceleration")
+    # K_2.1: Rectilinear Motion
+    elif pid == "K_2.1_1": # 2/1: Particle Velocity & Acceleration
+        t = np.linspace(0, 6, 100)
+        v = 20*t**2 - 100*t + 50
+        ax.plot(t, v, 'b-', label='$v(t)$')
+        ax.axhline(0, color='black', lw=1)
+        # Marking the point where a=0 (t=2.5s, v=-75)
+        ax.plot(2.5, -75, 'ro')
+        ax.annotate('a=0 (t=2.5s)', xy=(2.5, -75), xytext=(3.5, -40),
+                    arrowprops=dict(arrowstyle='->'))
+        ax.set_title("Velocity vs Time (v = 20t² - 100t + 50)")
+        ax.set_xlabel('Time (s)'); ax.set_ylabel('v (m/s)')
         found = True
-    elif pid == "K_2.1_2": # 입자 운동 s(t)
-        t_vals = np.linspace(0, 2, 100); s_vals = 3*t_vals**2 + 2*t_vals
-        ax.plot(t_vals, s_vals, 'g-'); ax.set_xlabel('Time'); ax.set_ylabel('Position')
-        ax.set_title("Particle Motion $s(t)$"); found = True
-    elif pid == "K_2.1_3": # 제동 거리 (Deceleration)
-        ax.add_patch(plt.Rectangle((-1, 0), 2, 1, color='red', alpha=0.3))
-        ax.annotate('', xy=(-2, 0.5), xytext=(-1, 0.5), arrowprops=dict(arrowstyle='->', color='black', lw=2))
-        ax.text(-2.5, 0.7, '$a=-5m/s^2$'); found = True
+
+    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
+        # Visualizing the cliff and ball trajectory
+        ax.add_patch(plt.Rectangle((-1, 0), 2, 50, color='gray', alpha=0.5)) # Cliff
+        t_flight = np.linspace(0, 3.71, 100)
+        y_vals = 80*t_flight - 0.5*32.2*t_flight**2
+        ax.plot(t_flight/2, y_vals, 'r--') # Path scaled for visualization
+        ax.text(-0.8, 25, '50 ft Cliff', rotation=90, verticalalignment='center')
+        ax.set_title("Vertical Motion from Base A to Cliff B")
+        ax.set_xlim(-2, 5); ax.set_ylim(0, 110)
+        found = True
+
+    elif pid == "K_2.1_3": # 2/15: Baseball Player (Trapezoidal Velocity)
+        # v-t graph: linear ramp then constant
+        t_accel = 0.889; t_total = 4.0; v_max = 22.5
+        ax.plot([0, t_accel, t_total], [0, v_max, v_max], 'g-', lw=2)
+        ax.fill_between([0, t_accel, t_total], [0, v_max, v_max], color='green', alpha=0.1)
+        ax.set_title("Baseball Player Velocity Profile")
+        ax.set_xlabel('Time (s)'); ax.set_ylabel('Velocity (ft/sec)')
+        ax.text(2, 10, 'Area = 90 ft', fontweight='bold')
+        found = True
 
     # K_2.2: 포물선 운동 (Projectile)
     elif pid == "K_2.2_1": # 최대 높이
