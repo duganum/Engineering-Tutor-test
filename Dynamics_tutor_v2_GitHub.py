@@ -79,7 +79,7 @@ elif st.session_state.page == "chat":
         st.subheader(f"📌 {prob['category']}")
         st.info(prob['statement'])
 
-        from logic_v2_GitHub import render_problem_diagram
+        from render_v2_GitHub import render_problem_diagram
         st.pyplot(render_problem_diagram(p_id))
     
     with cols[1]:
@@ -161,4 +161,5 @@ elif st.session_state.page == "report_view":
         st.session_state.page = "landing"
 
         st.rerun()
+
 
