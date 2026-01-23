@@ -79,25 +79,24 @@ def render_problem_diagram(prob_id):
             if os.path.exists(img_path):
                 img = plt.imread(img_path)
                 
-                # Use standard imshow without 'extent' to show the image as-is
+                # 1. Display the image
                 ax.imshow(img)
                 
-                # Remove all axes, grids, and labels that might overlap the image
-                ax.axis('off')
+                # 2. CRITICAL: Set limits to the image size (pixels)
+                # This prevents the global '(-2.5, 2.5)' from hiding it
+                height, width = img.shape[:2]
+                ax.set_xlim(0, width)
+                ax.set_ylim(height, 0) # Normal image orientation
                 
-                # Ensure the plot doesn't force a specific limit that cuts the image
-                ax.set_xlim(None)
-                ax.set_ylim(None)
+                # 3. Force 'auto' aspect so it fills the figure space
+                ax.set_aspect('auto')
+                ax.axis('off')
             else:
-                ax.text(0.5, 0.5, f"File missing at: {img_path}", ha='center', color='red')
+                ax.text(0.5, 0.5, "File Not Found", ha='center')
             
             found = True
         except Exception as e:
-            ax.text(0.5, 0.5, f"Display Error: {str(e)}", ha='center', color='blue')
-            found = True            
-        except Exception as e:
-            ax.text(0.5, 0.5, f"CRITICAL ERROR:\n{str(e)}", 
-                    ha='center', va='center', color='darkred', fontsize=9)
+            ax.text(0.5, 0.5, f"Error: {str(e)}", ha='center')
             found = True
 
     elif pid == "K_2.1_3":
