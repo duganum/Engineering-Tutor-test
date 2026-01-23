@@ -73,19 +73,11 @@ def render_problem_diagram(prob_id):
         found = True
 
     elif pid == "K_2.1_2": 
-        ax.add_patch(plt.Rectangle((-2, 0), 2, 50, color='gray', alpha=0.3)) 
-        t_land = 3.71
-        t_vals = np.linspace(0, t_land, 100)
-        y_vals = 80*t_vals - 16.1*t_vals**2
-        ax.plot(t_vals - 1, y_vals, 'r--') 
-        
-        # Add these for better clarity:
-        ax.text(-1, -5, 'A', fontweight='bold', ha='center')
-        ax.text(t_land - 1, 55, 'B', fontweight='bold', ha='center', color='blue')
-        
-        ax.set_xlim(-3, 4); ax.set_ylim(-10, 110)
-        ax.set_aspect('auto')
-        found = True
+        x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
+        ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
+        ax.annotate('', xy=(2, 2.5), xytext=(2, 2), arrowprops=dict(arrowstyle='<-', color='blue'))
+        ax.text(2.1, 2.2, '$H_{max}$'); found = True
+
 
     elif pid == "K_2.1_3":
         t_acc = 0.889; t_tot = 4.0; v_max = 22.5
