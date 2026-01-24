@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import re
 from logic_v2_GitHub import get_gemini_model, load_problems, check_numeric_match, analyze_and_send_report
+from render_v2_GitHub import render_problem_diagram
 
 st.set_page_config(page_title="Socratic Engineering Tutor", layout="wide")
 
@@ -14,7 +15,7 @@ if "user_name" not in st.session_state: st.session_state.user_name = None
 # Load Problems from local JSON
 PROBLEMS = load_problems()
 
-# --- Page 0: Name Entry (Required for Report) ---
+# --- Page 0: Name Entry ---
 if st.session_state.user_name is None:
     st.title("🛡️ Engineering Mechanics Portal")
     st.markdown("### Please identify yourself to begin the tutoring session.")
@@ -31,7 +32,7 @@ if st.session_state.user_name is None:
                 st.warning("You must enter a name for academic tracking and reporting.")
     st.stop()
 
-# --- Page 1: Main Menu (Problem Selection) ---
+# --- Page 1: Main Menu ---
 if st.session_state.page == "landing":
     st.title(f"🚀 Welcome, {st.session_state.user_name}")
     st.info("Texas A&M University - Corpus Christi | Dr. Dugan Um")
@@ -79,8 +80,11 @@ elif st.session_state.page == "chat":
         st.subheader(f"📌 {prob['category']}")
         st.info(prob['statement'])
 
-        from render_v2_GitHub import render_problem_diagram
-        st.pyplot(render_problem_diagram(p_id))
+        # --- REVISED DIAGRAM DISPLAY ---
+        # We use st.image because the render function now returns a buffer.
+        # Fixed width of 350 prevents stretching.
+        diagram_buf = render_problem_diagram(p_id)
+        st.image(diagram_buf, width=350)
     
     with cols[1]:
         total_targets = len(prob['targets'])
@@ -122,29 +126,24 @@ elif st.session_state.page == "chat":
     # Display Chat History
     if p_id in st.session_state.chat_sessions:
         for message in st.session_state.chat_sessions[p_id].history:
-            # Skip the initial system-trigger message
             if "Introduce the problem" in message.parts[0].text: continue
             
             role = "assistant" if message.role == "model" else "user"
             with st.chat_message(role):
                 raw_text = message.parts[0].text
-                # Remove internal metadata tags from student view
                 display_text = re.sub(r'\(Internal Status:.*?\)', '', raw_text).strip()
-                # Extract text from JSON format
                 match = re.search(r'"tutor_message":\s*"(.*?)"', display_text, re.DOTALL)
                 st.markdown(match.group(1) if match else display_text)
 
     # Input Logic
     if user_input := st.chat_input("Type your response or numerical answer here..."):
         new_match = False
-        # Check if student provided a correct target value
         for target, val in prob['targets'].items():
             if target not in solved:
                 if check_numeric_match(user_input, val):
                     st.session_state.grading_data[p_id]['solved'].add(target)
                     new_match = True
         
-        # Inject hidden status to guide the AI tutor
         state_info = f"\n(Internal Status: CurrentSolved={list(st.session_state.grading_data[p_id]['solved'])}. NewMatchFound={new_match})"
         st.session_state.chat_sessions[p_id].send_message(user_input + state_info)
         st.rerun()
@@ -157,9 +156,5 @@ elif st.session_state.page == "report_view":
     st.markdown(st.session_state.get("last_report", "No report available."))
     
     if st.button("Confirm and Return to Problem Menu"):
-        # Reset current session data if they want to try another problem
         st.session_state.page = "landing"
-
-        st.rerun()
-
-
+        st.rerun
