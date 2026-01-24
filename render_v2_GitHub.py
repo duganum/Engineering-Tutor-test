@@ -1,14 +1,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
+    
+    # 1. Create a small figure (2.5x2 inches) with high DPI for crisp lines
+    # This reduces the physical size by 50% compared to a standard 5x4
     fig, ax = plt.subplots(figsize=(2.5, 2), dpi=200)
+    
+    # Default aspect for geometric diagrams
     ax.set_aspect('equal')
     found = False
 
     # ---------------------------------------------------------
-    # 1. Statics (S_1.1 ~ S_1.4) - 기존 코드 유지
+    # 1. Statics (S_1.1 ~ S_1.4)
     # ---------------------------------------------------------
     if pid == "S_1.1_1":
         ax.plot(0, 0, 'ks', markersize=15)
@@ -38,8 +44,10 @@ def render_problem_diagram(prob_id):
         for x in range(3): ax.plot([x, x+1], [0, 0], 'k-o')
         ax.plot([0, 1, 1, 0], [0, 1, 0, 0], 'k-'); found = True
     elif "S_1.3" in pid:
-        if "1" in pid or "2" in pid: ax.add_patch(plt.Rectangle((-1, -1.5), 2, 3, fill=False, lw=2)); ax.plot(0, 0, 'rx')
-        else: ax.add_patch(plt.Circle((0, 0), 1.5, fill=False, lw=2))
+        if "1" in pid or "2" in pid: 
+            ax.add_patch(plt.Rectangle((-1, -1.5), 2, 3, fill=False, lw=2)); ax.plot(0, 0, 'rx')
+        else: 
+            ax.add_patch(plt.Circle((0, 0), 1.5, fill=False, lw=2))
         found = True
     elif pid == "S_1.4_1":
         ax.plot([-2, 2], [0, 0], 'k-', lw=4); ax.plot(0, -0.2, 'k^')
@@ -58,104 +66,89 @@ def render_problem_diagram(prob_id):
         found = True
 
     # ---------------------------------------------------------
-    # 2. Kinematics (K_2.1 ~ K_2.4) - 개별 분리 수정
+    # 2. Kinematics (K_2.1 ~ K_2.4)
     # ---------------------------------------------------------
-    
-# ... inside your function ...
-
     elif pid == "K_2.1_1": 
         t = np.linspace(0, 6, 100)
         v = 20*t**2 - 100*t + 50
         ax.plot(t, v, 'b-')
         ax.plot(2.5, -75, 'ro')
-        ax.set_xlim(0, 6); ax.set_ylim(-80, 200) # Tailored limits
+        ax.set_xlim(0, 6); ax.set_ylim(-80, 200)
         ax.set_aspect('auto') # Graphs shouldn't be equal aspect
         found = True
         
-    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
-        import os
+    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff Image)
         try:
             img_path = 'images/k212.png'
             if os.path.exists(img_path):
                 img = plt.imread(img_path)
-                
-                # 1. Display the image
                 ax.imshow(img)
-                
-                # 2. CRITICAL: Set limits to the image size (pixels)
-                # This prevents the global '(-2.5, 2.5)' from hiding it
                 height, width = img.shape[:2]
                 ax.set_xlim(0, width)
-                ax.set_ylim(height, 0) # Normal image orientation
-                
-                # 3. Force 'auto' aspect so it fills the figure space
-                # ax.set_aspect('auto')
+                ax.set_ylim(height, 0)
+                # FIXED: Preserve original aspect ratio
+                ax.set_aspect('equal') 
+                # FORCED: Ensure figure size is small even if UI tries to stretch
+                fig.set_size_inches(2.5, 2, forward=True)
                 ax.axis('off')
             else:
-                ax.text(0.5, 0.5, "File Not Found", ha='center')
-            
+                ax.text(0.5, 0.5, "Image Not Found", ha='center')
             found = True
         except Exception as e:
             ax.text(0.5, 0.5, f"Error: {str(e)}", ha='center')
             found = True
 
     elif pid == "K_2.1_3":
-        t_acc = 0.889; t_tot = 4.0; v_max = 22.5
-        ax.plot([0, t_acc, t_tot], [0, v_max, v_max], 'g-', lw=2)
-        ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30) # Tailored limits
+        ax.plot([0, 0.889, 4.0], [0, 22.5, 22.5], 'g-', lw=2)
+        ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30)
         ax.set_aspect('auto')
         found = True
 
-     # K_2.2: 포물선 운동 (Projectile)
-    elif pid == "K_2.2_1": # 최대 높이
+    elif pid == "K_2.2_1":
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
         ax.annotate('', xy=(2, 2.5), xytext=(2, 2), arrowprops=dict(arrowstyle='<-', color='blue'))
         ax.text(2.1, 2.2, '$H_{max}$'); found = True
-    elif pid == "K_2.2_2": # 수평 사거리
+    elif pid == "K_2.2_2":
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.annotate('', xy=(4, 0), xytext=(0, 0), arrowprops=dict(arrowstyle='<->'))
         ax.text(1.8, -0.4, 'Range $R$'); found = True
-    elif pid == "K_2.2_3": # 절벽 투사
+    elif pid == "K_2.2_3":
         x = np.linspace(0, 3, 50); y = 2 - 0.2*x**2
         ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko'); ax.plot([-0.5, 0], [0, 2], 'k-', lw=3)
         ax.set_title("Cliff Projectile"); found = True
 
-    # K_2.3: 법선 및 접선 가속도 (n-t)
-    elif pid == "K_2.3_1": # 원형 트랙 법선 가속도
+    elif pid == "K_2.3_1":
         c = plt.Circle((0,0), 1.5, fill=False, ls='--'); ax.add_patch(c)
         ax.annotate('', xy=(0,0), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='red'))
         ax.text(0.4, 0.4, '$a_n$'); found = True
-    elif pid == "K_2.3_2": # 총 가속도
+    elif pid == "K_2.3_2":
         c = plt.Circle((0,0), 1.5, fill=False, ls='--'); ax.add_patch(c)
-        ax.annotate('', xy=(0,0), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='red')) # an
-        ax.annotate('', xy=(0.5, 1.6), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='green')) # at
-        ax.annotate('', xy=(0, 1), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='purple')) # a_total
+        ax.annotate('', xy=(0,0), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='red'))
+        ax.annotate('', xy=(0.5, 1.6), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='green'))
+        ax.annotate('', xy=(0, 1), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='purple'))
         found = True
-    elif pid == "K_2.3_3": # 곡률 반경과 속도
+    elif pid == "K_2.3_3":
         ax.plot(np.linspace(-2,2,100), 0.5*np.linspace(-2,2,100)**2, 'k-')
         ax.text(0, 1, r'$\rho=50m$'); found = True
 
-    # K_2.4: 극좌표계 (Polar)
-    elif pid == "K_2.4_1" or pid == "K_2.4_2": # 로봇 팔 속도
-        ax.plot([0, 1.5], [0, 1.2], 'k-o', lw=4) # Arm
-        ax.annotate('', xy=(2.0, 1.6), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='blue')) # vr
-        ax.annotate('', xy=(1.1, 1.7), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='orange')) # v_theta
+    elif pid == "K_2.4_1" or pid == "K_2.4_2":
+        ax.plot([0, 1.5], [0, 1.2], 'k-o', lw=4)
+        ax.annotate('', xy=(2.0, 1.6), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='blue'))
+        ax.annotate('', xy=(1.1, 1.7), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='orange'))
         ax.text(1.8, 1.8, '$v_r$'); ax.text(0.8, 1.8, '$v_{\\theta}$'); found = True
-    elif pid == "K_2.4_3": # 원운동 가속도 (r=const)
+    elif pid == "K_2.4_3":
         c = plt.Circle((0,0), 1.5, fill=False, ls='--'); ax.add_patch(c)
         ax.plot([0, 1.5], [0, 0], 'k-o', lw=3)
         ax.annotate('', xy=(-0.5, 0), xytext=(0,0), arrowprops=dict(arrowstyle='->', color='red'))
         ax.text(-0.8, 0.2, '$a$'); found = True
 
-    # --- Error handling and default coordinate settings ---
+    # --- Fallback and Display Settings ---
     if not found:
-        ax.text(0.5, 0.5, f"No Diagram for ID: {pid}", color='red', ha='center')
+        ax.text(0.5, 0.5, f"No Diagram for ID:\n{pid}", color='red', ha='center')
         ax.set_xlim(-2.5, 2.5)
         ax.set_ylim(-2.5, 2.5)
-        ax.set_aspect('equal')
     
-    # REMOVE any lines below this that reset xlim, ylim, or aspect ratio!
     ax.axis('off')
     plt.tight_layout()
     return fig
