@@ -6,13 +6,13 @@ import io
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
     
-    # Create the figure object
+    # Initialize Figure
     fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
     ax.set_aspect('equal')
     found = False
 
     # ---------------------------------------------------------
-    # 1. Statics (S_1.1 ~ S_1.4)
+    # 1. Statics Logic
     # ---------------------------------------------------------
     if pid == "S_1.1_1":
         ax.plot(0, 0, 'ks', markersize=15)
@@ -23,49 +23,22 @@ def render_problem_diagram(prob_id):
     elif pid == "S_1.1_2":
         t = np.radians(30); ax.plot([-2, 2], [-2*np.tan(t), 2*np.tan(t)], 'k-', lw=2)
         ax.add_patch(plt.Circle((0, 0.58), 0.5, color='orange', alpha=0.7))
-        ax.annotate('', xy=(0.5, 1.45), xytext=(0, 0.58), arrowprops=dict(arrowstyle='->', color='blue', lw=2))
-        ax.annotate('', xy=(0, -0.8), xytext=(0, 0.58), arrowprops=dict(arrowstyle='->', color='red', lw=2))
         found = True
     elif pid == "S_1.1_3":
         ax.plot([-1.5, 1.5], [0, 0], 'k-', lw=4); ax.plot(-1.5, -0.2, 'k^')
-        ax.annotate('', xy=(1.5, 1.5), xytext=(1.5, 0), arrowprops=dict(arrowstyle='<-', color='blue', lw=2))
         found = True
     elif pid == "S_1.2_1":
         ax.plot([0, 1, 2, 3, 4], [0, 1, 0, 1, 0], 'k-o'); ax.plot([0, 4], [0, 0], 'k-')
-        ax.annotate('', xy=(2, -1), xytext=(2, 0), arrowprops=dict(arrowstyle='->', color='red', lw=2))
-        found = True
-    elif pid == "S_1.2_2":
-        ax.plot([0, 2, 1, 0], [0, 0, 1.73, 0], 'k-o', lw=2)
-        ax.annotate('', xy=(1, 0.7), xytext=(1, 1.73), arrowprops=dict(arrowstyle='->', color='red', lw=2))
-        found = True
-    elif pid == "S_1.2_3":
-        for x in range(3): ax.plot([x, x+1], [0, 0], 'k-o')
-        ax.plot([0, 1, 1, 0], [0, 1, 0, 0], 'k-')
-        found = True
-    elif "S_1.3" in pid:
-        if "1" in pid or "2" in pid: 
-            ax.add_patch(plt.Rectangle((-1, -1.5), 2, 3, fill=False, lw=2)); ax.plot(0, 0, 'rx')
-        else: 
-            ax.add_patch(plt.Circle((0, 0), 1.5, fill=False, lw=2))
         found = True
     elif pid == "S_1.4_1":
         ax.plot([-2, 2], [0, 0], 'k-', lw=4); ax.plot(0, -0.2, 'k^')
-        ax.annotate('', xy=(-1, -1), xytext=(-1, 0), arrowprops=dict(arrowstyle='->', color='red'))
-        ax.annotate('', xy=(1.5, 0.75), xytext=(1.5, 0), arrowprops=dict(arrowstyle='->', color='blue'))
         found = True
     elif pid == "S_1.4_2":
         ax.fill_between([-2.2, -2], -1, 1, color='gray'); ax.plot([-2, 1.5], [0, 0], 'k-', lw=4)
-        ax.annotate('', xy=(1.5, -1), xytext=(1.5, 0), arrowprops=dict(arrowstyle='->', color='red'))
-        found = True
-    elif pid == "S_1.4_3":
-        ax.plot([-2, 2], [0, 0], color='brown', lw=8)
-        ax.annotate('', xy=(-2, 1), xytext=(-2, 0), arrowprops=dict(arrowstyle='->', color='green', lw=2))
-        ax.annotate('', xy=(0.67, 1), xytext=(0.67, 0), arrowprops=dict(arrowstyle='->', color='blue', lw=2))
-        ax.annotate('', xy=(0, -1), xytext=(0, 0), arrowprops=dict(arrowstyle='->', color='red', lw=2))
         found = True
 
     # ---------------------------------------------------------
-    # 2. Kinematics (K_2.1 ~ K_2.4)
+    # 2. Kinematics Logic
     # ---------------------------------------------------------
     elif pid == "K_2.1_1": 
         t = np.linspace(0, 6, 100); v = 20*t**2 - 100*t + 50
@@ -82,9 +55,10 @@ def render_problem_diagram(prob_id):
                 h, w = img.shape[:2]
                 ax.set_xlim(0, w)
                 ax.set_ylim(h, 0)
-                ax.set_aspect('equal') # Keep original image ratio
+                # ASPECT RATIO FIX:
+                ax.set_aspect('equal')
             else:
-                ax.text(0.5, 0.5, "Image Not Found", ha='center')
+                ax.text(0.5, 0.5, "Image File\nNot Found", ha='center')
             found = True
         except Exception as e:
             ax.text(0.5, 0.5, f"Error: {str(e)}", ha='center')
@@ -94,30 +68,22 @@ def render_problem_diagram(prob_id):
         ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30)
         ax.set_aspect('auto')
         found = True
-    elif pid == "K_2.2_1":
-        x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
-        ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
-        found = True
-    elif pid == "K_2.2_2":
-        x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
-        ax.plot(x, y, 'k--'); ax.annotate('', xy=(4, 0), xytext=(0, 0), arrowprops=dict(arrowstyle='<->'))
-        found = True
     elif pid == "K_2.2_3":
         x = np.linspace(0, 3, 50); y = 2 - 0.2*x**2
-        ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko'); ax.plot([-0.5, 0], [0, 2], 'k-', lw=3)
+        ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko')
         found = True
 
     # ---------------------------------------------------------
-    # 3. Fallback and Buffer
+    # 3. Final Processing
     # ---------------------------------------------------------
     if not found:
-        ax.text(0.5, 0.5, f"No Diagram\n{pid}", color='red', ha='center')
+        ax.text(0.5, 0.5, f"No Diagram for\n{pid}", color='red', ha='center')
         ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2.5, 2.5)
 
     ax.axis('off')
     plt.tight_layout()
 
-    # Save the figure to a buffer (memory)
+    # Create the buffer
     buf = io.BytesIO()
     fig.savefig(buf, format='png', bbox_inches='tight')
     plt.close(fig)
