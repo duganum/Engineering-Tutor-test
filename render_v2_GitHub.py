@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import io
 
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
     
     # 1. Initialize the figure
-    # figsize (4, 3) is a good base; we will shrink it in the main app.
     fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
     ax.set_aspect('equal')
     found = False
@@ -73,7 +73,7 @@ def render_problem_diagram(prob_id):
         ax.set_aspect('auto')
         found = True
         
-    elif pid == "K_2.1_2": # REVISED: Cliff Image
+    elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         try:
             img_path = 'images/k212.png'
             if os.path.exists(img_path):
@@ -82,7 +82,7 @@ def render_problem_diagram(prob_id):
                 height, width = img.shape[:2]
                 ax.set_xlim(0, width)
                 ax.set_ylim(height, 0)
-                # FIX 1: Set aspect to equal to stop stretching
+                # FIXED: Preserve original aspect ratio
                 ax.set_aspect('equal') 
             else:
                 ax.text(0.5, 0.5, "Image Not Found", ha='center')
@@ -105,27 +105,4 @@ def render_problem_diagram(prob_id):
     elif pid == "K_2.2_2":
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.annotate('', xy=(4, 0), xytext=(0, 0), arrowprops=dict(arrowstyle='<->'))
-        ax.text(1.8, -0.4, 'Range $R$'); found = True
-    elif pid == "K_2.2_3":
-        x = np.linspace(0, 3, 50); y = 2 - 0.2*x**2
-        ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko'); ax.plot([-0.5, 0], [0, 2], 'k-', lw=3)
-        found = True
-
-    elif pid == "K_2.3_1":
-        c = plt.Circle((0,0), 1.5, fill=False, ls='--'); ax.add_patch(c)
-        ax.annotate('', xy=(0,0), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='red'))
-        found = True
-    elif pid == "K_2.4_1" or pid == "K_2.4_2":
-        ax.plot([0, 1.5], [0, 1.2], 'k-o', lw=4)
-        ax.annotate('', xy=(2.0, 1.6), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='blue'))
-        found = True
-
-    # --- Fallback ---
-    if not found:
-        ax.text(0.5, 0.5, f"No Diagram\n{pid}", color='red', ha='center')
-        ax.set_xlim(-2.5, 2.5)
-        ax.set_ylim(-2.5, 2.5)
-
-    ax.axis('off')
-    plt.tight_layout()
-    return fig
+        ax.text(1.8, -0.4, '
