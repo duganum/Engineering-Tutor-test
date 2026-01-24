@@ -84,96 +84,66 @@
     "required_units": ["n"]
   },
   {
-    "id": "K_2.1_1",
-    "category": "Kinematics: Rectilinear Motion",
-    "statement": "The velocity of a particle is given by $v = 20t^2 - 100t + 50$, where $v$ is in meters per second and $t$ is in seconds. Plot the velocity $v$ and acceleration $a$ versus time for the first 6 seconds of motion and evaluate the velocity when $a$ is zero.",
-    "targets": { "v_at_a0": -75.0 },
-    "required_units": ["m/s"]
-  },
-  {
-    "id": "K_2.1_2",
-    "category": "Kinematics: Vertical Motion",
-    "statement": "A ball is thrown vertically upward with an initial speed of 80 ft/sec from the base A of a 50-ft cliff. Determine the distance $h$ by which the ball clears the top of the cliff, the time $t$ after release for the ball to land at B, and the impact velocity $v_B$. Neglect air resistance.",
-    "targets": { 
-      "h": 49.4, 
-      "t": 3.71, 
-      "v_B": 39.5 
-    },
-    "required_units": ["ft", "s", "ft/sec"]
-  },
-  {
-    "id": "K_2.1_3",
-    "category": "Kinematics: Rectilinear Motion",
-    "statement": "Starting from rest at home plate, a baseball player runs to first base (90 ft away). He uniformly accelerates over the first 10 ft to his maximum speed, which is then maintained until he crosses first base. If the overall run is completed in 4 seconds, determine his maximum speed, the acceleration over the first 10 feet, and the time duration of the acceleration.",
-    "targets": { 
-      "v_max": 22.5, 
-      "a": 25.3, 
-      "t_accel": 0.889 
-    },
-    "required_units": ["ft/sec", "ft/sec^2", "s"]
-  },
-  {
     "id": "K_2.2_1",
     "category": "Kinematics: Projectile Motion",
-    "statement": "A ball is kicked at 20 m/s at an angle of 45 degrees. Find the Maximum Height ($H$). Use $g = 9.81 m/s^2$.",
-    "targets": { "H": 10.19 },
-    "required_units": ["m"]
+    "statement": "A rocket runs out of fuel in the position shown and continues in unpowered flight above the atmosphere. If its velocity in this position was 600 mi/hr, calculate the maximum additional altitude $h$ acquired and the corresponding time $t$ to reach it. The gravitational acceleration during this phase of its flight is 30.8 ft/sec$^2$.",
+    "targets": { "h": 12590, "t": 28.6 },
+    "required_units": ["ft", "s"]
   },
   {
     "id": "K_2.2_2",
     "category": "Kinematics: Projectile Motion",
-    "statement": "For the same ball (20 m/s, 45 deg), find the horizontal Range ($R$).",
-    "targets": { "R": 40.77 },
-    "required_units": ["m"]
+    "statement": "A roofer tosses a small tool to the ground. What minimum magnitude $v_0$ of horizontal velocity is required to just miss the roof corner $B$? Also determine the distance $d$.",
+    "targets": { "v_0": 6.67, "d": 8.01 },
+    "required_units": ["ft/sec", "ft"]
   },
   {
     "id": "K_2.2_3",
     "category": "Kinematics: Projectile Motion",
-    "statement": "A projectile is fired horizontally from a 50 m cliff at 10 m/s. Find the Time of flight ($t$).",
-    "targets": { "t": 3.19 },
-    "required_units": ["s"]
+    "statement": "The center of mass $G$ of a high jumper follows the trajectory shown. Determine the component $v_0$, measured in the vertical plane of the figure, of his take-off velocity and angle $\\theta$ if the apex of the trajectory just clears the bar at $A$. (In general, must the mass center $G$ of the jumper clear the bar during a successful jump?)",
+    "targets": { "v_0": 16.03, "theta": 63.3 },
+    "required_units": ["ft/sec", "deg"]
   },
   {
     "id": "K_2.3_1",
     "category": "Kinematics: Normal & Tangent",
-    "statement": "A car travels on a circular track of radius 100 m at a constant speed of 20 m/s. Find the Normal Acceleration ($a_n$).",
-    "targets": { "a_n": 4.0 },
-    "required_units": ["m/s^2", "m/s2"]
+    "statement": "Determine the maximum speed for each car if the normal acceleration is limited to 0.88g. The roadway is unbanked and level.",
+    "targets": { "v_max": 25.0 },
+    "required_units": ["m/s"]
   },
   {
     "id": "K_2.3_2",
     "category": "Kinematics: Normal & Tangent",
-    "statement": "If the car in the previous problem increases speed at $2 m/s^2$, find the Total Acceleration ($a_{total}$).",
-    "targets": { "a_total": 4.47 },
-    "required_units": ["m/s^2", "m/s2"]
+    "statement": "The driver of the truck has an acceleration of 0.4g as the truck passes over the top $A$ of the hump in the road at constant speed. The radius of curvature of the road at the top of the hump is 98 m, and the center of mass $G$ of the driver (considered a particle) is 2 m above the road. Calculate the speed $v$ of the truck.",
+    "targets": { "v": 19.8 },
+    "required_units": ["m/s"]
   },
   {
     "id": "K_2.3_3",
     "category": "Kinematics: Normal & Tangent",
-    "statement": "A particle moves on a path where $\\rho = 50 m$. At a certain point, $a_n = 8 m/s^2$. Find the Velocity ($v$).",
-    "targets": { "v": 20.0 },
-    "required_units": ["m/s"]
+    "statement": "The speed of a car increases uniformly with time from 50 km/h at $A$ to 100 km/h at $B$ during 10 seconds. The radius of curvature of the hump at $A$ is 40 m. If the magnitude of the total acceleration of the mass center of the car is the same at $B$ as at $A$, compute the radius of curvature $\\rho_B$ of the dip in the road at $B$. The mass center of the car is 0.6 m from the road.",
+    "targets": { "rho_B": 154.2 },
+    "required_units": ["m"]
   },
   {
     "id": "K_2.4_1",
     "category": "Kinematics: Polar Coordinates",
-    "statement": "A robotic arm extends at $\\dot{r} = 0.5 m/s$ while rotating at $\\dot{\\theta} = 2 rad/s$. If $r = 1 m$, find the radial Velocity ($v_r$).",
-    "targets": { "v_r": 0.5 },
-    "required_units": ["m/s"]
+    "statement": "The position of the slider $P$ in the rotating slotted arm $OA$ is controlled by a power screw as shown. At the instant represented, $\\dot{\\theta} = 8$ rad/s and $\\ddot{\\theta} = -20$ rad/s$^2$. Also at this same instant, $r = 200$ mm, $\\dot{r} = -300$ mm/s, and $\\ddot{r} = 0$. For this instant determine the $r$- and $\\theta$-components of the acceleration of $P$.",
+    "targets": { "a_r": -12.8, "a_theta": -8.8 },
+    "required_units": ["m/s^2"]
   },
   {
     "id": "K_2.4_2",
     "category": "Kinematics: Polar Coordinates",
-    "statement": "Using the same arm ($r=1, \\dot{r}=0.5, \\dot{\\theta}=2$), find the transverse Velocity ($v_{\\theta}$).",
-    "targets": { "v_theta": 2.0 },
-    "required_units": ["m/s"]
+    "statement": "A car $P$ travels along a straight road with a constant speed $v = 65$ mi/hr. At the instant when the angle $\\theta = 60^\\circ$, determine the values of $\\dot{r}$ in ft/sec and $\\dot{\\theta}$ in deg/sec.",
+    "targets": { "rdot": 82.5, "thetadot": 11.08 },
+    "required_units": ["ft/sec", "deg/sec"]
   },
   {
     "id": "K_2.4_3",
     "category": "Kinematics: Polar Coordinates",
-    "statement": "A particle moves such that $r = 2 m$ (constant) and $\\dot{\\theta} = 3 rad/s$. Find the Magnitude of Acceleration ($a$).",
-    "targets": { "a": 18.0 },
-    "required_units": ["m/s^2", "m/s2"]
+    "statement": "The rocket is fired vertically and tracked by the radar station shown. When $\\theta$ reaches $60^\\circ$, other corresponding measurements give the values $r = 30,000$ ft, $\\ddot{r} = 70$ ft/sec$^2$, and $\\dot{\\theta} = 0.02$ rad/sec. Calculate the magnitudes of the velocity and acceleration of the rocket at this position.",
+    "targets": { "v": 1200, "a": 84.4 },
+    "required_units": ["ft/sec", "ft/sec^2"]
   }
 ]
-
