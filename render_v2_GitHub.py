@@ -75,7 +75,7 @@ def render_problem_diagram(prob_id):
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         import os
         try:
-            img_path = 'images/k212.png'
+            img_path = 'k212.png'
             if os.path.exists(img_path):
                 img = plt.imread(img_path)
                 
