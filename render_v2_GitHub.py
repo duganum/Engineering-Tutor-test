@@ -6,7 +6,7 @@ def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
     
     # Initialize the small figure
-    fig, ax = plt.subplots(figsize=(5, 4), dpi=100)
+    fig, ax = plt.subplots(figsize=(5, 4), dpi=300)
     ax.set_aspect('equal')
     found = False
 
