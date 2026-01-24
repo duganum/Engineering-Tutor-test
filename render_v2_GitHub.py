@@ -3,7 +3,7 @@ import numpy as np
 
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
-    fig, ax = plt.subplots(figsize=(5, 4))
+    fig, ax = plt.subplots(figsize=(2, 1))
     ax.set_aspect('equal')
     found = False
 
