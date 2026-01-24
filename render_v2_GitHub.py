@@ -89,7 +89,7 @@ def render_problem_diagram(prob_id):
                 ax.set_ylim(height, 0) # Normal image orientation
                 
                 # 3. Force 'auto' aspect so it fills the figure space
-                ax.set_aspect('auto')
+                # ax.set_aspect('auto')
                 ax.axis('off')
             else:
                 ax.text(0.5, 0.5, "File Not Found", ha='center')
