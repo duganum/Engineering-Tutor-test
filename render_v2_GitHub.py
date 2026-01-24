@@ -6,7 +6,7 @@ import io
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
     
-    # 1. Initialize the figure
+    # Create the figure object
     fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
     ax.set_aspect('equal')
     found = False
@@ -40,7 +40,8 @@ def render_problem_diagram(prob_id):
         found = True
     elif pid == "S_1.2_3":
         for x in range(3): ax.plot([x, x+1], [0, 0], 'k-o')
-        ax.plot([0, 1, 1, 0], [0, 1, 0, 0], 'k-'); found = True
+        ax.plot([0, 1, 1, 0], [0, 1, 0, 0], 'k-')
+        found = True
     elif "S_1.3" in pid:
         if "1" in pid or "2" in pid: 
             ax.add_patch(plt.Rectangle((-1, -1.5), 2, 3, fill=False, lw=2)); ax.plot(0, 0, 'rx')
@@ -72,37 +73,53 @@ def render_problem_diagram(prob_id):
         ax.set_xlim(0, 6); ax.set_ylim(-80, 200)
         ax.set_aspect('auto')
         found = True
-        
     elif pid == "K_2.1_2": # 2/13: Vertical Projectile (Cliff)
         try:
             img_path = 'images/k212.png'
             if os.path.exists(img_path):
                 img = plt.imread(img_path)
                 ax.imshow(img)
-                height, width = img.shape[:2]
-                ax.set_xlim(0, width)
-                ax.set_ylim(height, 0)
-                # FIXED: Preserve original aspect ratio
-                ax.set_aspect('equal') 
+                h, w = img.shape[:2]
+                ax.set_xlim(0, w)
+                ax.set_ylim(h, 0)
+                ax.set_aspect('equal') # Keep original image ratio
             else:
                 ax.text(0.5, 0.5, "Image Not Found", ha='center')
             found = True
         except Exception as e:
             ax.text(0.5, 0.5, f"Error: {str(e)}", ha='center')
             found = True
-
     elif pid == "K_2.1_3":
         ax.plot([0, 0.889, 4.0], [0, 22.5, 22.5], 'g-', lw=2)
         ax.set_xlim(-0.5, 4.5); ax.set_ylim(-5, 30)
         ax.set_aspect('auto')
         found = True
-
     elif pid == "K_2.2_1":
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.plot(2, 2, 'ro')
-        ax.annotate('', xy=(2, 2.5), xytext=(2, 2), arrowprops=dict(arrowstyle='<-', color='blue'))
-        ax.text(2.1, 2.2, '$H_{max}$'); found = True
+        found = True
     elif pid == "K_2.2_2":
         x = np.linspace(0, 4, 100); y = -0.5*(x-2)**2 + 2
         ax.plot(x, y, 'k--'); ax.annotate('', xy=(4, 0), xytext=(0, 0), arrowprops=dict(arrowstyle='<->'))
-        ax.text(1.8, -0.4, '
+        found = True
+    elif pid == "K_2.2_3":
+        x = np.linspace(0, 3, 50); y = 2 - 0.2*x**2
+        ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko'); ax.plot([-0.5, 0], [0, 2], 'k-', lw=3)
+        found = True
+
+    # ---------------------------------------------------------
+    # 3. Fallback and Buffer
+    # ---------------------------------------------------------
+    if not found:
+        ax.text(0.5, 0.5, f"No Diagram\n{pid}", color='red', ha='center')
+        ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2.5, 2.5)
+
+    ax.axis('off')
+    plt.tight_layout()
+
+    # Save the figure to a buffer (memory)
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png', bbox_inches='tight')
+    plt.close(fig)
+    buf.seek(0)
+    return buf
