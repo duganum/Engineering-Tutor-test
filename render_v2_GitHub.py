@@ -1,15 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import io
-import base64
-from IPython.display import display, HTML
 
 def render_problem_diagram(prob_id):
     pid = str(prob_id).strip()
     
-    # 1. Initialize figure with high DPI for clarity
-    fig, ax = plt.subplots(figsize=(2.5, 2), dpi=200)
+    # 1. Initialize the figure
+    # figsize (4, 3) is a good base; we will shrink it in the main app.
+    fig, ax = plt.subplots(figsize=(4, 3), dpi=150)
     ax.set_aspect('equal')
     found = False
 
@@ -69,15 +67,13 @@ def render_problem_diagram(prob_id):
     # 2. Kinematics (K_2.1 ~ K_2.4)
     # ---------------------------------------------------------
     elif pid == "K_2.1_1": 
-        t = np.linspace(0, 6, 100)
-        v = 20*t**2 - 100*t + 50
+        t = np.linspace(0, 6, 100); v = 20*t**2 - 100*t + 50
         ax.plot(t, v, 'b-')
-        ax.plot(2.5, -75, 'ro')
         ax.set_xlim(0, 6); ax.set_ylim(-80, 200)
-        ax.set_aspect('auto') 
+        ax.set_aspect('auto')
         found = True
         
-    elif pid == "K_2.1_2": # Vertical Projectile (Cliff)
+    elif pid == "K_2.1_2": # REVISED: Cliff Image
         try:
             img_path = 'images/k212.png'
             if os.path.exists(img_path):
@@ -86,7 +82,7 @@ def render_problem_diagram(prob_id):
                 height, width = img.shape[:2]
                 ax.set_xlim(0, width)
                 ax.set_ylim(height, 0)
-                # FIXED: Keep original ratio
+                # FIX 1: Set aspect to equal to stop stretching
                 ax.set_aspect('equal') 
             else:
                 ax.text(0.5, 0.5, "Image Not Found", ha='center')
@@ -115,26 +111,21 @@ def render_problem_diagram(prob_id):
         ax.plot(x, y, 'k--'); ax.plot(0, 2, 'ko'); ax.plot([-0.5, 0], [0, 2], 'k-', lw=3)
         found = True
 
-    # ... (Add K_2.3 and K_2.4 logic if needed following the same pattern)
+    elif pid == "K_2.3_1":
+        c = plt.Circle((0,0), 1.5, fill=False, ls='--'); ax.add_patch(c)
+        ax.annotate('', xy=(0,0), xytext=(1.06, 1.06), arrowprops=dict(arrowstyle='->', color='red'))
+        found = True
+    elif pid == "K_2.4_1" or pid == "K_2.4_2":
+        ax.plot([0, 1.5], [0, 1.2], 'k-o', lw=4)
+        ax.annotate('', xy=(2.0, 1.6), xytext=(1.5, 1.2), arrowprops=dict(arrowstyle='->', color='blue'))
+        found = True
 
-    # --- Error Handling ---
+    # --- Fallback ---
     if not found:
         ax.text(0.5, 0.5, f"No Diagram\n{pid}", color='red', ha='center')
         ax.set_xlim(-2.5, 2.5)
         ax.set_ylim(-2.5, 2.5)
 
-    # --- FINAL RENDERING (The Size Fix) ---
     ax.axis('off')
     plt.tight_layout()
-
-    # Save to buffer
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight')
-    plt.close(fig) # Prevent standard large output
-    
-    # Force 250px width via HTML injection
-    encoded = base64.b64encode(buf.getvalue()).decode('utf-8')
-    display(HTML(f'<img src="data:image/png;base64,{encoded}" width="250">'))
-
-# Call the function
-render_problem_diagram("K_2.1_2")
+    return fig
