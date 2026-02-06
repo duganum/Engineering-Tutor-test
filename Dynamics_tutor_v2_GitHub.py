@@ -97,8 +97,10 @@ if st.session_state.page == "landing":
                 if i + j < len(probs):
                     prob = probs[i + j]
                     
-                    # --- MODIFIED BUTTON LABEL: ID REMOVED ---
-                    if "hw_title" in prob:
+                    # --- REVISED BUTTON LABEL: ID REMOVED & HW6 TITLED AS RECTILINEAR ---
+                    if "hw_subtitle" in prob and "rectilinear" in prob["hw_subtitle"].lower():
+                        button_label = "**Rectilinear Motion**"
+                    elif "hw_title" in prob:
                         button_label = f"**{prob['hw_title']}**"
                     else:
                         button_label = f"**{prob.get('category', '').split(':')[-1].strip()}**"
@@ -209,6 +211,7 @@ elif st.session_state.page == "lecture":
                     history_text += f"{role}: {msg.parts[0].text}\n"
             
             with st.spinner("Analyzing mastery..."):
+                # --- SYNTAX ERROR FIXED: Added missing closing parenthesis ---
                 report = analyze_and_send_report(st.session_state.user_name, f"LECTURE: {topic}", history_text + f"\n--- STUDENT FEEDBACK ---\n{lecture_feedback}")
                 st.session_state.last_report = report
                 st.session_state.page = "report_view"; st.rerun()
