@@ -55,7 +55,7 @@ if st.session_state.page == "landing":
     st.title(f"🚀 Welcome, {st.session_state.user_name}!")
     st.info("Texas A&M University - Corpus Christi | Dr. Dugan Um")
     
-    # Section A: Interactive Lectures (Now with Relative Motion)
+    # Section A: Interactive Lectures
     st.markdown("---")
     st.subheader("💡 Interactive Learning Agents")
     col_l1, col_l2, col_l3, col_l4 = st.columns(4)
@@ -82,6 +82,9 @@ if st.session_state.page == "landing":
         # Mapping Kinematics to Particle Kinematics for display
         if cat_main == "Kinematics":
             cat_main = "Particle Kinematics"
+        # Support grouping for HW 6 specifically
+        elif "HW 6" in cat_main:
+            cat_main = "Kinetics of Particles (Rectilinear)"
             
         if cat_main not in categories: categories[cat_main] = []
         categories[cat_main].append(p)
@@ -93,7 +96,12 @@ if st.session_state.page == "landing":
             for j in range(3):
                 if i + j < len(probs):
                     prob = probs[i + j]
-                    sub_label = prob.get('category', '').split(":")[-1].strip()
+                    # Handle subtitle extraction for the button label
+                    if "hw_subtitle" in prob:
+                        sub_label = prob["hw_subtitle"].capitalize()
+                    else:
+                        sub_label = prob.get('category', '').split(":")[-1].strip()
+                        
                     with cols[j]:
                         if st.button(f"**{sub_label}**\n({prob['id']})", key=f"btn_{prob['id']}", use_container_width=True):
                             st.session_state.current_prob = prob
@@ -112,7 +120,8 @@ elif st.session_state.page == "chat":
     with cols[0]:
         st.subheader(f"📌 {prob['category']}")
         st.info(prob['statement'])
-        st.image(render_problem_diagram(p_id), width=400)
+        # Pass the whole prob object to handle directory logic in render
+        st.image(render_problem_diagram(prob), width=400)
     
     with cols[1]:
         st.metric("Variables Found", f"{len(solved)} / {len(prob['targets'])}")
@@ -128,6 +137,16 @@ elif st.session_state.page == "chat":
             st.session_state.last_report = report
             st.session_state.page = "report_view"; st.rerun()
 
+    # --- THE ONE EXTRA LINE AT THE BOTTOM (Integrated here) ---
+    st.markdown("---")
+    hw_title = prob.get("hw_title", "")
+    hw_subtitle = prob.get("hw_subtitle", "")
+    if hw_title and hw_subtitle:
+        st.markdown(f"**{hw_title} ({hw_subtitle})**")
+    else:
+        st.markdown(f"**{prob.get('category', 'Engineering Review')}**")
+
+    # Chat Logic
     if p_id not in st.session_state.chat_sessions:
         sys_prompt = (
             f"You are the Engineering Tutor for {st.session_state.user_name} at TAMUCC. "
@@ -153,6 +172,7 @@ elif st.session_state.page == "chat":
 
 # --- Page 3: Interactive Lecture ---
 elif st.session_state.page == "lecture":
+    # (Lecture code remains unchanged as it uses distinct rendering logic)
     topic = st.session_state.lecture_topic
     st.title(f"🎓 Lab: {topic}")
     col_sim, col_chat = st.columns([1, 1])

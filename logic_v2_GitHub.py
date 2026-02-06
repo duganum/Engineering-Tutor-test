@@ -40,6 +40,16 @@ def check_numeric_match(user_val, correct_val, tolerance=0.05):
     except (ValueError, TypeError, AttributeError):
         return False
 
+# --- NEW: UI Metadata Helper ---
+def get_footer_info(prob):
+    """Extracts title and subtitle for the bottom UI line."""
+    title = prob.get("hw_title")
+    subtitle = prob.get("hw_subtitle")
+    if title and subtitle:
+        return f"{title} ({subtitle})"
+    # Fallback to category if HW metadata is missing
+    return prob.get("category", "Engineering Practice")
+
 def evaluate_understanding_score(chat_history):
     """
     강의 세션 대화 내용을 바탕으로 이해도를 0-10점으로 평가합니다.
@@ -64,7 +74,6 @@ def evaluate_understanding_score(chat_history):
 
     try:
         response = model.generate_content(f"Chat history to evaluate:\n{chat_history}")
-        # Extract number
         score_match = re.search(r"\d+", response.text)
         if score_match:
             score = int(score_match.group())
@@ -76,7 +85,6 @@ def evaluate_understanding_score(chat_history):
 def analyze_and_send_report(user_name, topic_title, chat_history):
     """세션을 분석하여 Dr. Um에게 이메일 리포트를 전송합니다. LaTeX 가독성을 확인합니다."""
     
-    # Calculate score before sending report
     score = evaluate_understanding_score(chat_history)
     
     report_instruction = (

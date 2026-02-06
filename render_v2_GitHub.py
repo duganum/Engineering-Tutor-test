@@ -3,14 +3,20 @@ import numpy as np
 import os
 import io
 
-def render_problem_diagram(prob_id):
-    """Generates precise FBDs and geometric diagrams for all categories."""
-    pid = str(prob_id).strip()
+def render_problem_diagram(prob):
+    """Generates precise FBDs or loads images from the HW directory structure."""
+    # Ensure we handle both the full object and just the ID for backward compatibility
+    if isinstance(prob, dict):
+        pid = str(prob.get('id', '')).strip()
+    else:
+        pid = str(prob).strip()
+        prob = {} # Create empty dict to avoid errors below
+
     fig, ax = plt.subplots(figsize=(4, 3), dpi=100)
     ax.set_aspect('equal')
     found = False
 
-    # --- S_1.1 to S_1.4 sections ---
+    # --- Procedural Diagrams (Statics sections) ---
     if pid.startswith("S_1.1"):
         if pid == "S_1.1_1": # 50kg mass cables
             ax.plot(0, 0, 'ko', markersize=8)
@@ -51,51 +57,34 @@ def render_problem_diagram(prob_id):
             ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.5, 2)
             found = True
 
-    elif pid.startswith("S_1.3"):
-        if pid == "S_1.3_1":
-            ax.add_patch(plt.Rectangle((0,0), 4, 6, fill=False, hatch='/'))
-            ax.plot(2, 3, 'rx', markersize=10) 
-            ax.set_xlim(-1, 5); ax.set_ylim(-1, 7)
-            found = True
-        elif pid == "S_1.3_2":
-            ax.add_patch(plt.Rectangle((-0.1, -0.1), 0.2, 0.2, color='orange', alpha=0.3))
-            ax.axhline(0, color='black', lw=1); ax.axvline(0, color='black', lw=1)
-            ax.set_xlim(-0.2, 0.2); ax.set_ylim(-0.2, 0.2)
-            found = True
-        elif pid == "S_1.3_3":
-            ax.add_patch(plt.Circle((0,0), 0.25, color='blue', alpha=0.2))
-            ax.set_xlim(-0.5, 0.5); ax.set_ylim(-0.5, 0.5)
-            found = True
-
-    elif pid.startswith("S_1.4"):
-        if pid == "S_1.4_1":
-            ax.plot([-2, 4], [0, 0], 'k', lw=4); ax.plot(0, -0.2, 'k^', markersize=15)
-            ax.set_xlim(-3, 5); ax.set_ylim(-2, 2)
-            found = True
-        elif pid == "S_1.4_2":
-            ax.plot([0, 3], [0, 0], 'gray', lw=8); ax.axvline(0, color='black', lw=10)
-            ax.set_xlim(-1, 4); ax.set_ylim(-2, 2)
-            found = True
-        elif pid == "S_1.4_3":
-            ax.plot([0, 6], [0, 0], 'brown', lw=10)
-            ax.set_xlim(-1, 7); ax.set_ylim(-2, 2)
-            found = True
-
-    # --- Kinematics Image Loader ---
-    elif pid.startswith("K"):
-        try:
+    # --- HW Directory Image Loader (NEW) ---
+    if not found:
+        hw_title = prob.get("hw_title")
+        hw_subtitle = prob.get("hw_subtitle")
+        
+        if hw_title and hw_subtitle:
+            # Path: images/HW 6 (kinetics of particles-rectilinear motion)/1.png
+            folder_name = f"{hw_title} ({hw_subtitle})"
+            # Extract number from ID (e.g., '1' from 'HW6_1')
+            image_num = pid.split('_')[-1]
+            img_path = os.path.join('images', folder_name, f"{image_num}.png")
+        else:
+            # Original Kinematics fallback loader
             clean_name = pid.replace("_", "").replace(".", "").lower()
             img_path = f'images/{clean_name}.png'
+
+        try:
             if os.path.exists(img_path):
                 img = plt.imread(img_path)
                 ax.imshow(img)
                 h, w = img.shape[:2]
                 ax.set_xlim(0, w); ax.set_ylim(h, 0)
                 found = True
-        except: pass
+        except Exception:
+            pass
 
     if not found:
-        ax.text(0.5, 0.5, f"Diagram\n{pid}", color='gray', ha='center', va='center')
+        ax.text(0.5, 0.5, f"Diagram Not Found\nID: {pid}", color='red', ha='center', va='center')
         ax.set_xlim(0, 1); ax.set_ylim(0, 1)
 
     ax.axis('off')
@@ -118,31 +107,17 @@ def render_lecture_visual(topic, params=None):
     ax.set_aspect('equal')
     
     if topic == "Relative Motion":
-        # Inputs from sliders
         vA = params.get('vA', [15, 5])
         vB = params.get('vB', [10, -5])
-        
-        # vA/B calculation
-        v_rel_x = vA[0] - vB[0]
-        v_rel_y = vA[1] - vB[1]
+        v_rel_x, v_rel_y = vA[0] - vB[0], vA[1] - vB[1]
 
-        # 1. vA starts at (0,0)
-        ax.quiver(0, 0, vA[0], vA[1], color='blue', angles='xy', scale_units='xy', scale=1, 
-                  label=r'$\vec{v}_A$', zorder=3)
+        ax.quiver(0, 0, vA[0], vA[1], color='blue', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_A$')
+        ax.quiver(0, 0, vB[0], vB[1], color='red', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_B$')
+        ax.quiver(vB[0], vB[1], v_rel_x, v_rel_y, color='green', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_{A/B}$')
         
-        # 2. vB starts at (0,0)
-        ax.quiver(0, 0, vB[0], vB[1], color='red', angles='xy', scale_units='xy', scale=1, 
-                  label=r'$\vec{v}_B$', zorder=3)
-        
-        # 3. vA/B starts at Tip of B and ends at Tip of A
-        ax.quiver(vB[0], vB[1], v_rel_x, v_rel_y, color='green', angles='xy', scale_units='xy', scale=1, 
-                  label=r'$\vec{v}_{A/B}$', zorder=4)
-        
-        # Center (0,0) by finding the max vector reach and mirroring it
-        max_reach = max(np.abs([vA[0], vA[1], vB[0], vB[1], vB[0]+v_rel_x, vB[1]+v_rel_y]))
+        max_reach = max(np.abs([vA[0], vA[1], vB[0], vB[1], vA[0], vA[1]]))
         limit = max_reach + 5
-        ax.set_xlim(-limit, limit)
-        ax.set_ylim(-limit, limit)
+        ax.set_xlim(-limit, limit); ax.set_ylim(-limit, limit)
         ax.set_title(r"Relative Motion: $\vec{v}_A = \vec{v}_B + \vec{v}_{A/B}$")
         ax.legend(loc='upper right')
 
@@ -154,11 +129,8 @@ def render_lecture_visual(topic, params=None):
         x = v0 * np.cos(theta) * t
         y = v0 * np.sin(theta) * t - 0.5 * g * t**2
         ax.plot(x, y, 'g-', lw=2)
-        # For projectile, we usually show the 1st quadrant, but keep origin centered horizontally
         ax.set_xlim(-5, max(x)+5); ax.set_ylim(-5, max(y)+5)
-        ax.set_title(r"Projectile: $y = x\tan\theta - \frac{gx^2}{2v_0^2\cos^2\theta}$")
-
-    # ... (Other lecture types follow same centered grid pattern)
+        ax.set_title(r"Projectile Trajectory")
 
     plt.tight_layout()
     buf = io.BytesIO()

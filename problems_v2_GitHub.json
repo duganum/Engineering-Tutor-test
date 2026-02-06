@@ -100,7 +100,7 @@
   {
     "id": "K_2.2_3",
     "category": "Kinematics: Projectile Motion",
-    "statement": "The center of mass $G$ of a high jumper follows the trajectory shown. Determine the component $v_0$, measured in the vertical plane of the figure, of his take-off velocity and angle $\\theta$ if the apex of the trajectory just clears the bar at $A$. (In general, must the mass center $G$ of the jumper clear the bar during a successful jump?)",
+    "statement": "The center of mass $G$ of a high jumper follows the trajectory shown. Determine the component $v_0$, measured in the vertical plane of the figure, of his take-off velocity and angle $\\theta$ if the apex of the trajectory just clears the bar at $A$.",
     "targets": { "v_0": 16.03, "theta": 63.3 },
     "required_units": ["ft/sec", "deg"]
   },
@@ -166,6 +166,32 @@
     "statement": "Starting from the relative position shown, aircraft B is to rendezvous with the refueling tanker A. If B is to arrive in close proximity to A in a two-minute time interval, what absolute velocity vector should B acquire and maintain? The velocity of the tanker A is 300 mi/hr along the constant-altitude path shown.",
     "targets": { "v_Bx": 450, "v_By": 86.6 },
     "required_units": ["mi/hr"]
-  }  
- 
+  },
+  {
+    "id": "HW6_1",
+    "hw_title": "HW 6",
+    "hw_subtitle": "kinetics of particles-rectilinear motion",
+    "category": "HW 6 (kinetics of particles-rectilinear motion)",
+    "statement": "The 50-kg crate is projected along the floor with an initial speed of 7 m/s at x = 0. The coefficient of kinetic friction is 0.40. Calculate the time t required for the crate to come to rest and the corresponding distance x traveled.",
+    "targets": { "t": 1.78, "x": 6.24 },
+    "required_units": ["s", "m"]
+  },
+  {
+    "id": "HW6_4",
+    "hw_title": "HW 6",
+    "hw_subtitle": "kinetics of particles-rectilinear motion",
+    "category": "HW 6 (kinetics of particles-rectilinear motion)",
+    "statement": "A 60-kg woman stands on a scale in an elevator. The scale reads 720 N. If the elevator is moving upward, what is its acceleration? Use $g = 9.81 m/s^2$.",
+    "targets": { "a": 2.19 },
+    "required_units": ["m/s^2"]
+  },
+  {
+    "id": "HW6_32",
+    "hw_title": "HW 6",
+    "hw_subtitle": "kinetics of particles-rectilinear motion",
+    "category": "HW 6 (kinetics of particles-rectilinear motion)",
+    "statement": "Determine the acceleration of the 5-kg block A when the system is released from rest. Neglect the mass of the pulleys and friction.",
+    "targets": { "a_A": 1.635 },
+    "required_units": ["m/s^2"]
+  }
 ]
