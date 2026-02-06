@@ -82,9 +82,11 @@ if st.session_state.page == "landing":
         # Mapping Kinematics to Particle Kinematics for display
         if cat_main == "Kinematics":
             cat_main = "Particle Kinematics"
-        # Support grouping for HW 6 specifically
+        # Support grouping for HW 6 and HW 7 specifically
         elif "HW 6" in cat_main:
             cat_main = "Kinetics of Particles (Rectilinear)"
+        elif "HW 7" in cat_main:
+            cat_main = "Kinetics of Particles (Curvilinear)"
             
         if cat_main not in categories: categories[cat_main] = []
         categories[cat_main].append(p)
@@ -97,9 +99,12 @@ if st.session_state.page == "landing":
                 if i + j < len(probs):
                     prob = probs[i + j]
                     
-                    # --- REVISED BUTTON LABEL: ID REMOVED & HW6 TITLED AS RECTILINEAR ---
-                    if "hw_subtitle" in prob and "rectilinear" in prob["hw_subtitle"].lower():
+                    # --- REVISED BUTTON LABEL: ID REMOVED & CUSTOM TITLES APPLIED ---
+                    subtitle = prob.get("hw_subtitle", "").lower()
+                    if "rectilinear" in subtitle:
                         button_label = "**Rectilinear Motion**"
+                    elif "curvilinear" in subtitle:
+                        button_label = "**Curvilinear Motion**"
                     elif "hw_title" in prob:
                         button_label = f"**{prob['hw_title']}**"
                     else:
@@ -211,7 +216,7 @@ elif st.session_state.page == "lecture":
                     history_text += f"{role}: {msg.parts[0].text}\n"
             
             with st.spinner("Analyzing mastery..."):
-                # --- SYNTAX ERROR FIXED: Added missing closing parenthesis ---
+                # --- SYNTAX ERROR FIXED ---
                 report = analyze_and_send_report(st.session_state.user_name, f"LECTURE: {topic}", history_text + f"\n--- STUDENT FEEDBACK ---\n{lecture_feedback}")
                 st.session_state.last_report = report
                 st.session_state.page = "report_view"; st.rerun()
