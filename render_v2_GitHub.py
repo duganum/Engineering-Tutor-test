@@ -4,19 +4,22 @@ import os
 import io
 
 def render_problem_diagram(prob):
-    """Generates precise FBDs or loads images from the HW directory structure."""
+    """
+    Generates procedural FBDs for Statics or loads external images for Dynamics.
+    Updated to support nested paths: images/[HW Folder]/images/[ID].png
+    """
     # Ensure we handle both the full object and just the ID for backward compatibility
     if isinstance(prob, dict):
         pid = str(prob.get('id', '')).strip()
     else:
         pid = str(prob).strip()
-        prob = {} # Create empty dict to avoid errors below
+        prob = {}
 
     fig, ax = plt.subplots(figsize=(4, 3), dpi=100)
     ax.set_aspect('equal')
     found = False
 
-    # --- Procedural Diagrams (Statics sections) ---
+    # --- 1. Procedural Statics Diagrams (S_1.1 to S_1.4) ---
     if pid.startswith("S_1.1"):
         if pid == "S_1.1_1": # 50kg mass cables
             ax.plot(0, 0, 'ko', markersize=8)
@@ -57,21 +60,20 @@ def render_problem_diagram(prob):
             ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.5, 2)
             found = True
 
-    # --- HW Directory Image Loader (NEW) ---
+    # --- 2. HW Directory Image Loader (The Nested Path Logic) ---
     if not found:
         hw_title = prob.get("hw_title")
         hw_subtitle = prob.get("hw_subtitle")
         
         if hw_title and hw_subtitle:
-            # Path: images/HW 6 (kinetics of particles-rectilinear motion)/1.png
+            # Construct path: images/HW X (Subtitle)/images/X.png
             folder_name = f"{hw_title} ({hw_subtitle})"
-            # Extract number from ID (e.g., '1' from 'HW6_1')
-            image_num = pid.split('_')[-1]
-            img_path = os.path.join('images', folder_name, f"{image_num}.png")
+            image_filename = f"{pid.split('_')[-1]}.png" # e.g., '1.png'
+            img_path = os.path.join('images', folder_name, 'images', image_filename)
         else:
-            # Original Kinematics fallback loader
+            # Fallback for old style Kinematics IDs like K_2.2_1
             clean_name = pid.replace("_", "").replace(".", "").lower()
-            img_path = f'images/{clean_name}.png'
+            img_path = os.path.join('images', f'{clean_name}.png')
 
         try:
             if os.path.exists(img_path):
@@ -83,6 +85,7 @@ def render_problem_diagram(prob):
         except Exception:
             pass
 
+    # --- 3. Error Handling: Placeholder if nothing found ---
     if not found:
         ax.text(0.5, 0.5, f"Diagram Not Found\nID: {pid}", color='red', ha='center', va='center')
         ax.set_xlim(0, 1); ax.set_ylim(0, 1)
@@ -115,8 +118,7 @@ def render_lecture_visual(topic, params=None):
         ax.quiver(0, 0, vB[0], vB[1], color='red', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_B$')
         ax.quiver(vB[0], vB[1], v_rel_x, v_rel_y, color='green', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_{A/B}$')
         
-        max_reach = max(np.abs([vA[0], vA[1], vB[0], vB[1], vA[0], vA[1]]))
-        limit = max_reach + 5
+        limit = max(np.abs(vA + vB)) + 5
         ax.set_xlim(-limit, limit); ax.set_ylim(-limit, limit)
         ax.set_title(r"Relative Motion: $\vec{v}_A = \vec{v}_B + \vec{v}_{A/B}$")
         ax.legend(loc='upper right')
@@ -130,7 +132,7 @@ def render_lecture_visual(topic, params=None):
         y = v0 * np.sin(theta) * t - 0.5 * g * t**2
         ax.plot(x, y, 'g-', lw=2)
         ax.set_xlim(-5, max(x)+5); ax.set_ylim(-5, max(y)+5)
-        ax.set_title(r"Projectile Trajectory")
+        ax.set_title(r"Projectile Trajectory Analysis")
 
     plt.tight_layout()
     buf = io.BytesIO()
