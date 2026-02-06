@@ -63,14 +63,14 @@ def render_problem_diagram(prob):
         hw_subtitle = prob.get("hw_subtitle")
         
         if hw_title and hw_subtitle:
-            # Matches folder: images/HW 6 (subtitle)/images/1.png
+            # Matches folder: images/HW X (subtitle)/images/ID.png
             folder_name = f"{hw_title} ({hw_subtitle})"
-            # Extract number from ID (e.g., '1' from 'HW6_1')
+            # Extract number from ID (e.g., '47' from 'HW7_47')
             image_num = pid.split('_')[-1]
-            # Updated to include the nested 'images' subfolder
+            # Join parts to include the nested 'images' subfolder
             img_path = os.path.join('images', folder_name, 'images', f"{image_num}.png")
         else:
-            # Original Kinematics fallback loader
+            # Original Kinematics fallback loader for IDs like K_2.2_1
             clean_name = pid.replace("_", "").replace(".", "").lower()
             img_path = os.path.join('images', f'{clean_name}.png')
 
