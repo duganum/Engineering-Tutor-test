@@ -4,18 +4,23 @@ import os
 import io
 
 def render_problem_diagram(prob):
-    """Generates precise FBDs or loads images from the specific HW directory structure."""
+    """
+    Generates procedural FBDs for Statics or loads external images for Dynamics.
+    Supports nested paths: images/[HW Folder]/images/[ID].png
+    Handles specific double-spacing in HW 7 directory naming.
+    """
+    # Ensure we handle both the full object and just the ID for backward compatibility
     if isinstance(prob, dict):
         pid = str(prob.get('id', '')).strip()
     else:
         pid = str(prob).strip()
-        prob = {} 
+        prob = {}
 
     fig, ax = plt.subplots(figsize=(4, 3), dpi=100)
     ax.set_aspect('equal')
     found = False
 
-    # --- Procedural Diagrams (Statics sections) ---
+    # --- 1. Procedural Statics Diagrams (S_1.1 to S_1.4) ---
     if pid.startswith("S_1.1"):
         if pid == "S_1.1_1": # 50kg mass cables
             ax.plot(0, 0, 'ko', markersize=8)
@@ -56,23 +61,24 @@ def render_problem_diagram(prob):
             ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.5, 2)
             found = True
 
-    # --- HW Directory Image Loader (Adjusted for Double Spacing & Nested Images) ---
+    # --- 2. HW Directory Image Loader (The Nested Path Logic) ---
     if not found:
         hw_title = prob.get("hw_title")
         hw_subtitle = prob.get("hw_subtitle")
         
         if hw_title and hw_subtitle:
-            # Special check for HW 7 to account for the double space in your directory
+            # --- HANDLE DOUBLE SPACE FOR HW 7 ---
             if hw_title == "HW 7":
-                folder_name = f"HW 7  ({hw_subtitle})" # Note the double space here
+                folder_name = f"HW 7  ({hw_subtitle})" # Note the 2 spaces between 7 and (
             else:
                 folder_name = f"{hw_title} ({hw_subtitle})"
             
             # Extract number from ID (e.g., '47' from 'HW7_47')
-            image_num = pid.split('_')[-1]
+            image_id = pid.split('_')[-1] 
+            image_filename = f"{image_id}.png"
             
-            # Path construction: images/[Folder]/images/[ID].png
-            img_path = os.path.join('images', folder_name, 'images', f"{image_num}.png")
+            # Construct path: images/[HW Folder]/images/[ID].png
+            img_path = os.path.join('images', folder_name, 'images', image_filename)
             
             try:
                 if os.path.exists(img_path):
@@ -84,17 +90,21 @@ def render_problem_diagram(prob):
             except Exception:
                 pass
         
-        # Fallback for Kinematics K_ files
+        # Fallback for old style Kinematics IDs like K_2.2_1
         if not found:
             clean_name = pid.replace("_", "").replace(".", "").lower()
             img_path_alt = os.path.join('images', f'{clean_name}.png')
             if os.path.exists(img_path_alt):
-                img = plt.imread(img_path_alt)
-                ax.imshow(img)
-                h, w = img.shape[:2]
-                ax.set_xlim(0, w); ax.set_ylim(h, 0)
-                found = True
+                try:
+                    img = plt.imread(img_path_alt)
+                    ax.imshow(img)
+                    h, w = img.shape[:2]
+                    ax.set_xlim(0, w); ax.set_ylim(h, 0)
+                    found = True
+                except Exception:
+                    pass
 
+    # --- 3. Error Handling ---
     if not found:
         ax.text(0.5, 0.5, f"Diagram Not Found\nID: {pid}", color='red', ha='center', va='center')
         ax.set_xlim(0, 1); ax.set_ylim(0, 1)
@@ -112,6 +122,7 @@ def render_lecture_visual(topic, params=None):
     fig, ax = plt.subplots(figsize=(6, 6), dpi=150)
     if params is None: params = {}
     
+    # Grid and Origin Settings
     ax.axhline(0, color='black', lw=1.5, zorder=2)
     ax.axvline(0, color='black', lw=1.5, zorder=2)
     ax.grid(True, linestyle=':', alpha=0.6)
@@ -121,11 +132,12 @@ def render_lecture_visual(topic, params=None):
         vA = params.get('vA', [15, 5])
         vB = params.get('vB', [10, -5])
         v_rel_x, v_rel_y = vA[0] - vB[0], vA[1] - vB[1]
+
         ax.quiver(0, 0, vA[0], vA[1], color='blue', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_A$')
         ax.quiver(0, 0, vB[0], vB[1], color='red', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_B$')
         ax.quiver(vB[0], vB[1], v_rel_x, v_rel_y, color='green', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_{A/B}$')
-        max_reach = max(np.abs([vA[0], vA[1], vB[0], vB[1], vA[0], vA[1]]))
-        limit = max_reach + 5
+        
+        limit = max(np.abs(vA + vB)) + 5
         ax.set_xlim(-limit, limit); ax.set_ylim(-limit, limit)
         ax.set_title(r"Relative Motion: $\vec{v}_A = \vec{v}_B + \vec{v}_{A/B}$")
         ax.legend(loc='upper right')
@@ -139,7 +151,7 @@ def render_lecture_visual(topic, params=None):
         y = v0 * np.sin(theta) * t - 0.5 * g * t**2
         ax.plot(x, y, 'g-', lw=2)
         ax.set_xlim(-5, max(x)+5); ax.set_ylim(-5, max(y)+5)
-        ax.set_title(r"Projectile Trajectory")
+        ax.set_title(r"Projectile Trajectory Analysis")
 
     plt.tight_layout()
     buf = io.BytesIO()
