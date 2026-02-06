@@ -16,6 +16,7 @@ st.markdown("""
         height: 60px;
         padding: 5px 10px;
         font-size: 16px;
+        font-weight: bold;
         white-space: normal;
         word-wrap: break-word;
         line-height: 1.2;
@@ -77,18 +78,14 @@ if st.session_state.page == "landing":
     st.subheader("📝 Engineering Review Problems")
     categories = {}
     
-    # Exclude basic Statics entries to clean up the UI
-    exclude_ids = ["S_1.1_1", "S_1.1_2", "S_1.1_3"] 
-
     for p in PROBLEMS:
-        if p['id'] in exclude_ids:
+        p_id = p['id']
+        # EXCLUDE ALL Legacy IDs (K_ and S_)
+        if p_id.startswith("K_") or p_id.startswith("S_"):
             continue
             
         cat_main = p.get('category', 'General').split(":")[0].strip()
-        
-        if cat_main == "Kinematics":
-            cat_main = "Particle Kinematics"
-        elif "HW 6" in cat_main:
+        if "HW 6" in cat_main:
             cat_main = "Kinetics of Particles (Rectilinear)"
             
         if cat_main not in categories: categories[cat_main] = []
@@ -101,12 +98,8 @@ if st.session_state.page == "landing":
             for j in range(3):
                 if i + j < len(probs):
                     prob = probs[i + j]
-                    
-                    # Button shows ONLY the Title (e.g., HW 6 or Truss)
-                    if "hw_title" in prob:
-                        button_label = f"**{prob['hw_title']}**"
-                    else:
-                        button_label = f"**{prob.get('category', '').split(':')[-1].strip()}**"
+                    # Button shows ONLY the Title (e.g., HW 6)
+                    button_label = f"**{prob.get('hw_title', 'Problem')}**"
                         
                     with cols[j]:
                         if st.button(button_label, key=f"btn_{prob['id']}", use_container_width=True):
@@ -126,7 +119,6 @@ elif st.session_state.page == "chat":
     with cols[0]:
         st.subheader(f"📌 {prob['category']}")
         st.info(prob['statement'])
-        # Pass full prob to handle nested folder logic
         st.image(render_problem_diagram(prob), width=400)
     
     with cols[1]:
@@ -143,17 +135,11 @@ elif st.session_state.page == "chat":
             st.session_state.last_report = report
             st.session_state.page = "report_view"; st.rerun()
 
-    # THE ONE EXTRA LINE AT THE BOTTOM (Title and Subtitle)
     st.markdown("---")
     st.markdown(f"**{get_footer_info(prob)}**")
 
-    # Chat Session
     if p_id not in st.session_state.chat_sessions:
-        sys_prompt = (
-            f"You are the Engineering Tutor for {st.session_state.user_name} at TAMUCC. "
-            f"Context: {prob['statement']}. Use LaTeX for all math. "
-            "Respond ONLY after the student types something."
-        )
+        sys_prompt = f"Engineering Tutor for {st.session_state.user_name}. LaTeX only. Socratic method."
         model = get_gemini_model(sys_prompt)
         st.session_state.chat_sessions[p_id] = model.start_chat(history=[])
 
@@ -179,15 +165,13 @@ elif st.session_state.page == "lecture":
             params['v0'] = st.slider("v0", 5, 100, 30); params['angle'] = st.slider("theta", 0, 90, 45)
         elif topic == "Normal & Tangent":
             params['v'] = st.slider("v", 1, 50, 20); params['rho'] = st.slider("rho", 5, 100, 50)
-        elif topic == "Polar Coordinates":
-            params['r'] = st.slider("r", 1, 50, 20); params['theta'] = st.slider("theta", 0, 360, 45)
         elif topic == "Relative Motion":
             params['vA'] = [st.slider("vA_x", -20, 20, 15), st.slider("vA_y", -20, 20, 5)]
             params['vB'] = [st.slider("vB_x", -20, 20, 10), st.slider("vB_y", -20, 20, -5)]
         
         st.image(render_lecture_visual(topic, params))
         st.markdown("---")
-        lecture_feedback = st.text_area("Final Summary:", placeholder="Summarize your findings.")
+        lecture_feedback = st.text_area("Final Summary:", placeholder="Summarize findings.")
         
         if st.button("🚀 Submit Lecture Report", use_container_width=True):
             history_text = ""
@@ -195,4 +179,30 @@ elif st.session_state.page == "lecture":
                 for msg in st.session_state.lecture_session.history:
                     role = "Professor" if msg.role == "model" else "Student"
                     history_text += f"{role}: {msg.parts[0].text}\n"
-            report = analyze_and_send_report(st.session_state.user_name, f"LECTURE: {topic}", history_text
+            # Syntax Error Fixed here:
+            report = analyze_and_send_report(st.session_state.user_name, f"LECTURE: {topic}", history_text + f"\n--- STUDENT FEEDBACK ---\n{lecture_feedback}")
+            st.session_state.last_report = report
+            st.session_state.page = "report_view"; st.rerun()
+
+        if st.button("🏠 Exit", use_container_width=True):
+            st.session_state.lecture_session = None; st.session_state.page = "landing"; st.rerun()
+
+    with col_chat:
+        st.subheader("💬 Socratic Discussion")
+        if "lecture_session" not in st.session_state or st.session_state.lecture_session is None:
+            model = get_gemini_model(f"TAMUCC Professor teaching {topic}. English/LaTeX.")
+            st.session_state.lecture_session = model.start_chat(history=[])
+            st.session_state.lecture_session.send_message(f"Hello {st.session_state.user_name}. How do the vectors in this {topic} simulation relate to the governing equations?")
+        
+        for msg in st.session_state.lecture_session.history:
+            with st.chat_message("assistant" if msg.role == "model" else "user"):
+                st.markdown(msg.parts[0].text)
+        
+        if lecture_input := st.chat_input("Discuss the physics..."):
+            st.session_state.lecture_session.send_message(lecture_input); st.rerun()
+
+elif st.session_state.page == "report_view":
+    st.title("📊 Performance Summary")
+    st.markdown(st.session_state.get("last_report", "No report available."))
+    if st.button("Return to Main Menu"):
+        st.session_state.page = "landing"; st.rerun()
