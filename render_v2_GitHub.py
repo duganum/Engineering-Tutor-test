@@ -4,13 +4,12 @@ import os
 import io
 
 def render_problem_diagram(prob):
-    """Generates precise FBDs or loads images from the HW directory structure."""
-    # Ensure we handle both the full object and just the ID for backward compatibility
+    """Generates precise FBDs or loads images from the specific HW directory structure."""
     if isinstance(prob, dict):
         pid = str(prob.get('id', '')).strip()
     else:
         pid = str(prob).strip()
-        prob = {} # Create empty dict to avoid errors below
+        prob = {} 
 
     fig, ax = plt.subplots(figsize=(4, 3), dpi=100)
     ax.set_aspect('equal')
@@ -57,32 +56,44 @@ def render_problem_diagram(prob):
             ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.5, 2)
             found = True
 
-    # --- HW Directory Image Loader (Updated for nested 'images' folder) ---
+    # --- HW Directory Image Loader (Adjusted for Double Spacing & Nested Images) ---
     if not found:
         hw_title = prob.get("hw_title")
         hw_subtitle = prob.get("hw_subtitle")
         
         if hw_title and hw_subtitle:
-            # Matches folder: images/HW X (subtitle)/images/ID.png
-            folder_name = f"{hw_title} ({hw_subtitle})"
+            # Special check for HW 7 to account for the double space in your directory
+            if hw_title == "HW 7":
+                folder_name = f"HW 7  ({hw_subtitle})" # Note the double space here
+            else:
+                folder_name = f"{hw_title} ({hw_subtitle})"
+            
             # Extract number from ID (e.g., '47' from 'HW7_47')
             image_num = pid.split('_')[-1]
-            # Join parts to include the nested 'images' subfolder
+            
+            # Path construction: images/[Folder]/images/[ID].png
             img_path = os.path.join('images', folder_name, 'images', f"{image_num}.png")
-        else:
-            # Original Kinematics fallback loader for IDs like K_2.2_1
+            
+            try:
+                if os.path.exists(img_path):
+                    img = plt.imread(img_path)
+                    ax.imshow(img)
+                    h, w = img.shape[:2]
+                    ax.set_xlim(0, w); ax.set_ylim(h, 0)
+                    found = True
+            except Exception:
+                pass
+        
+        # Fallback for Kinematics K_ files
+        if not found:
             clean_name = pid.replace("_", "").replace(".", "").lower()
-            img_path = os.path.join('images', f'{clean_name}.png')
-
-        try:
-            if os.path.exists(img_path):
-                img = plt.imread(img_path)
+            img_path_alt = os.path.join('images', f'{clean_name}.png')
+            if os.path.exists(img_path_alt):
+                img = plt.imread(img_path_alt)
                 ax.imshow(img)
                 h, w = img.shape[:2]
                 ax.set_xlim(0, w); ax.set_ylim(h, 0)
                 found = True
-        except Exception:
-            pass
 
     if not found:
         ax.text(0.5, 0.5, f"Diagram Not Found\nID: {pid}", color='red', ha='center', va='center')
@@ -101,7 +112,6 @@ def render_lecture_visual(topic, params=None):
     fig, ax = plt.subplots(figsize=(6, 6), dpi=150)
     if params is None: params = {}
     
-    # Grid and Origin Settings
     ax.axhline(0, color='black', lw=1.5, zorder=2)
     ax.axvline(0, color='black', lw=1.5, zorder=2)
     ax.grid(True, linestyle=':', alpha=0.6)
@@ -111,11 +121,9 @@ def render_lecture_visual(topic, params=None):
         vA = params.get('vA', [15, 5])
         vB = params.get('vB', [10, -5])
         v_rel_x, v_rel_y = vA[0] - vB[0], vA[1] - vB[1]
-
         ax.quiver(0, 0, vA[0], vA[1], color='blue', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_A$')
         ax.quiver(0, 0, vB[0], vB[1], color='red', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_B$')
         ax.quiver(vB[0], vB[1], v_rel_x, v_rel_y, color='green', angles='xy', scale_units='xy', scale=1, label=r'$\vec{v}_{A/B}$')
-        
         max_reach = max(np.abs([vA[0], vA[1], vB[0], vB[1], vA[0], vA[1]]))
         limit = max_reach + 5
         ax.set_xlim(-limit, limit); ax.set_ylim(-limit, limit)
