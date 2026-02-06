@@ -193,5 +193,32 @@
     "statement": "Determine the acceleration of the 5-kg block A when the system is released from rest. Neglect the mass of the pulleys and friction.",
     "targets": { "a_A": 1.635 },
     "required_units": ["m/s^2"]
+  },
+  {
+    "id": "HW7_47",
+    "hw_title": "HW 7",
+    "hw_subtitle": "kinetics of particles-curvilinear motion",
+    "category": "HW 7 (kinetics of particles-curvilinear motion)",
+    "statement": "The car passes the position shown on the vertical-plane track. If its speed is 60 km/h and is increasing at the rate of 5 m/s², determine the magnitude of the total acceleration and the normal force exerted by the track on the car.",
+    "targets": { "a": 5.83, "N": 4500 },
+    "required_units": ["m/s^2", "n"]
+  },
+  {
+    "id": "HW7_64",
+    "hw_title": "HW 7",
+    "hw_subtitle": "kinetics of particles-curvilinear motion",
+    "category": "HW 7 (kinetics of particles-curvilinear motion)",
+    "statement": "The car enters the S-curve at a constant speed. Determine the maximum speed it can maintain without sliding if the coefficient of static friction is 0.70. Radius of curvature at the tightest part is 80 m.",
+    "targets": { "v_max": 23.4 },
+    "required_units": ["m/s"]
+  },
+  {
+    "id": "HW7_67",
+    "hw_title": "HW 7",
+    "hw_subtitle": "kinetics of particles-curvilinear motion",
+    "category": "HW 7 (kinetics of particles-curvilinear motion)",
+    "statement": "A particle moves along the curved path shown. At the instant represented, its velocity is 12 m/s and its tangent acceleration is 4 m/s². Calculate the total acceleration vector in n-t coordinates.",
+    "targets": { "a_n": 7.2, "a_t": 4.0 },
+    "required_units": ["m/s^2"]
   }
 ]
