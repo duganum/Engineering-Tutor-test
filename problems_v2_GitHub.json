@@ -181,18 +181,25 @@
     "hw_title": "HW 6",
     "hw_subtitle": "kinetics of particles-rectilinear motion",
     "category": "HW 6 (kinetics of particles-rectilinear motion)",
-    "statement": "A 60-kg woman stands on a scale in an elevator. The scale reads 720 N. If the elevator is moving upward, what is its acceleration? Use $g = 9.81 m/s^2$.",
-    "targets": { "a": 2.19 },
-    "required_units": ["m/s^2"]
+    "statement": "A 60-kg woman holds a 9-kg package as she stands within an elevator which briefly accelerates upward at a rate of $g/4$. Determine the force $R$ which the elevator floor exerts on her feet and the lifting force $L$ which she exerts on the package during the acceleration interval. Use $g = 9.81\text{ m/s}^2$.",
+    "targets": {
+        "R": 846.1,
+        "L": 110.4
+    },
+    "required_units": ["N", "N"]
   },
   {
     "id": "HW6_32",
     "hw_title": "HW 6",
     "hw_subtitle": "kinetics of particles-rectilinear motion",
     "category": "HW 6 (kinetics of particles-rectilinear motion)",
-    "statement": "Determine the acceleration of the 5-kg block A when the system is released from rest. Neglect the mass of the pulleys and friction.",
-    "targets": { "a_A": 1.635 },
-    "required_units": ["m/s^2"]
+    "statement": "The sliders A (2 kg) and B (3 kg) are connected by a light rigid bar of length $l = 0.5$ m and move with negligible friction in horizontal slots. For the position where $x_A = 0.4$ m, the velocity of A is $v_A = 0.9$ m/s to the right. A constant force $P = 40$ N is applied to slider A. Determine the acceleration of each slider and the force in the bar at this instant.",
+    "targets": {
+        "a_A": 12.18,
+        "a_B": -14.65,
+        "F_bar": 19.55
+    },
+    "required_units": ["m/s^2", "m/s^2", "N"]
   },
   {
     "id": "HW7_47",
@@ -222,3 +229,4 @@
     "required_units": ["n"]
   }
 ]
+
