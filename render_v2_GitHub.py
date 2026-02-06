@@ -7,7 +7,7 @@ def render_problem_diagram(prob):
     """
     Generates procedural FBDs for Statics or loads external images for Dynamics.
     Supports nested paths: images/[HW Folder]/images/[ID].png
-    Handles specific double-spacing in HW 7 directory naming.
+    Handles specific spacing in HW 7 directory naming.
     """
     # Ensure we handle both the full object and just the ID for backward compatibility
     if isinstance(prob, dict):
@@ -61,23 +61,20 @@ def render_problem_diagram(prob):
             ax.set_xlim(-0.5, 3.5); ax.set_ylim(-0.5, 2)
             found = True
 
-    # --- 2. HW Directory Image Loader (The Nested Path Logic) ---
+    # --- 2. HW Directory Image Loader (Nested Path Logic) ---
     if not found:
         hw_title = prob.get("hw_title")
         hw_subtitle = prob.get("hw_subtitle")
         
         if hw_title and hw_subtitle:
-            # --- HANDLE DOUBLE SPACE FOR HW 7 ---
+            # Handles the double spacing in directory "HW 7  (kinetics...)"
             if hw_title == "HW 7":
-                folder_name = f"HW 7  ({hw_subtitle})" # Note the 2 spaces between 7 and (
+                folder_name = f"HW 7  ({hw_subtitle})" 
             else:
                 folder_name = f"{hw_title} ({hw_subtitle})"
             
-            # Extract number from ID (e.g., '47' from 'HW7_47')
-            image_id = pid.split('_')[-1] 
-            image_filename = f"{image_id}.png"
-            
-            # Construct path: images/[HW Folder]/images/[ID].png
+            image_filename = f"{pid.split('_')[-1]}.png"
+            # Corrected to include the nested 'images' subfolder
             img_path = os.path.join('images', folder_name, 'images', image_filename)
             
             try:
